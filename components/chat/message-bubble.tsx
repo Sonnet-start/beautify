@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, User, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import Image from "next/image";
 import type { Message } from "@/lib/store/chat-store";
 
 interface MessageBubbleProps {
@@ -34,10 +35,21 @@ export function MessageBubble({ message, index }: MessageBubbleProps) {
             <Card
                 glass={!isUser}
                 className={`max-w-[80%] p-4 ${isUser
-                        ? "bg-gradient-to-br from-primary to-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
-                        : "shadow-md"
+                    ? "bg-gradient-to-br from-primary to-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
+                    : "shadow-md"
                     }`}
             >
+                {message.image && (
+                    <div className="mb-3 rounded-lg overflow-hidden">
+                        <Image
+                            src={message.image}
+                            alt="Uploaded image"
+                            width={300}
+                            height={300}
+                            className="w-full h-auto object-cover"
+                        />
+                    </div>
+                )}
                 <div className="whitespace-pre-wrap text-sm leading-relaxed">
                     {message.content}
                 </div>

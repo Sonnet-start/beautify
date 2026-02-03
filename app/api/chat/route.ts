@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { generateRecommendation, type UserProfile } from "@/lib/ai/gemini";
+import { generateRecommendation, analyzeImage, type UserProfile } from "@/lib/ai/gemini";
 
 export const runtime = "nodejs";
 
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
         }
 
         const body = await request.json();
-        const { message, history } = body;
+        const { message, image, history } = body;
 
         if (!message || typeof message !== "string") {
             return NextResponse.json(
@@ -38,7 +38,25 @@ export async function POST(request: NextRequest) {
         };
 
         // Generate AI response
-        const result = await generateRecommendation(message, userProfile, history);
+        let result;
+
+        if (image) {
+            // Extract mimeType from base64 data URL
+            const mimeMatch = image.match(/data:(.*?);base64/);
+            const mimeType = mimeMatch ? mimeMatch[1] : "image/jpeg";
+
+            const analysisText = await analyzeImage(image, mimeType, userProfile);
+            result = {
+                text: analysisText,
+                history: [
+                    ...(history || []),
+                    { role: "user", content: message },
+                    { role: "assistant", content: analysisText },
+                ],
+            };
+        } else {
+            result = await generateRecommendation(message, userProfile, history);
+        }
 
         return NextResponse.json({
             response: result.text,

@@ -21,10 +21,11 @@ export default function ConsultationPage() {
         scrollToBottom();
     }, [messages]);
 
-    async function handleSubmit(userMessage: string) {
+    async function handleSubmit(userMessage: string, image?: string) {
         addMessage({
             role: "user",
             content: userMessage,
+            image,
         });
 
         setLoading(true);
@@ -36,6 +37,7 @@ export default function ConsultationPage() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     message: userMessage,
+                    image,
                     history,
                 }),
             });
