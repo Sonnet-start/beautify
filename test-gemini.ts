@@ -11,7 +11,7 @@ console.log("🔑 API Key найден:", apiKey.slice(0, 5) + "...");
 
 async function testConnection() {
     try {
-        const genAI = new GoogleGenerativeAI(apiKey);
+        const genAI = new GoogleGenerativeAI(apiKey!);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         console.log("📡 Отправка тестового запроса к gemini-1.5-flash...");

@@ -120,7 +120,7 @@ export async function analyzeImage(
                 role: "user",
                 content: [
                     { type: "text", text: prompt },
-                    { type: "image", image: imageBase64, mimeType },
+                    { type: "image", image: imageBase64, mediaType: mimeType },
                 ],
             },
         ],

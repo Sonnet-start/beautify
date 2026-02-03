@@ -47,11 +47,11 @@ start demo/index.html
 ## 🛠 Технологический стек
 
 ### Frontend
-- React 18 с TypeScript
-- Redux Toolkit для управления состоянием
-- Material-UI для компонентов
-- React Query для кэширования API
-- i18next для многоязычности
+- React 18+ (Next.js 16) с TypeScript
+- Zustand для управления UI состоянием
+- TanStack Query для сетевых запросов
+- Framer Motion для анимаций
+- Tailwind CSS + Shadcn UI
 
 ### Backend
 - Node.js 18+ с TypeScript
@@ -65,7 +65,7 @@ start demo/index.html
 - Redis (кэширование)
 
 ### Внешние сервисы
-- Google AI (Gemini 3 Flash & Vision)
+- Google AI (Gemini 3 Flash & Vision via OAuth)
 - Supabase (Auth, Database, Storage)
 
 ## 🚀 Быстрый старт
