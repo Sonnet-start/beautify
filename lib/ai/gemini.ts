@@ -1,7 +1,7 @@
 import { generateText } from "ai";
 import { createGeminiProvider } from "ai-sdk-provider-gemini-cli";
 
-// Initialize the Gemini provider with OAuth (Antigravity subscription)
+// Initialize the Gemini provider with OAuth (subscription-based)
 const gemini = createGeminiProvider({
     authType: "oauth-personal",
 });

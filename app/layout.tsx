@@ -30,6 +30,7 @@ export default function RootLayout({
   return (
     <html lang="ru" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`${notoSans.variable} ${tenorSans.variable} font-sans antialiased`}
       >
         <QueryProvider>{children}</QueryProvider>

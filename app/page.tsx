@@ -63,12 +63,6 @@ export default async function HomePage() {
                 Начать бесплатно
               </Button>
             </Link>
-            <Link href="/design-demo">
-              <Button size="xl" variant="outline">
-                Демо дизайна
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
           </div>
         </div>
       </section>

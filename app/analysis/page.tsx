@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +19,10 @@ export default function AnalysisPage() {
     function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
         if (!file) return;
+        handleImageFile(file);
+    }
 
+    function handleImageFile(file: File) {
         // Validate file type
         const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
         if (!allowedTypes.includes(file.type)) {
@@ -38,6 +41,45 @@ export default function AnalysisPage() {
         setSelectedImage(URL.createObjectURL(file));
         setAnalysis(null);
     }
+
+    function handlePaste(e: React.ClipboardEvent<HTMLDivElement>) {
+        const items = e.clipboardData?.items;
+        if (!items) return;
+
+        const imageItem = Array.from(items).find(item =>
+            item.type.startsWith("image/")
+        );
+        if (!imageItem) return;
+
+        const file = imageItem.getAsFile();
+        if (!file) return;
+
+        e.preventDefault();
+        handleImageFile(file);
+    }
+
+    useEffect(() => {
+        function handleWindowPaste(e: ClipboardEvent) {
+            const items = e.clipboardData?.items;
+            if (!items) return;
+
+            const imageItem = Array.from(items).find(item =>
+                item.type.startsWith("image/")
+            );
+            if (!imageItem) return;
+
+            const file = imageItem.getAsFile();
+            if (!file) return;
+
+            e.preventDefault();
+            handleImageFile(file);
+        }
+
+        window.addEventListener("paste", handleWindowPaste);
+        return () => {
+            window.removeEventListener("paste", handleWindowPaste);
+        };
+    }, []);
 
     function clearImage() {
         setSelectedImage(null);
@@ -121,7 +163,7 @@ export default function AnalysisPage() {
                                 Сделайте фото лица при хорошем освещении для точного анализа
                             </CardDescription>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent onPaste={handlePaste}>
                             <input
                                 ref={fileInputRef}
                                 type="file"
@@ -146,6 +188,9 @@ export default function AnalysisPage() {
                                         <p className="text-lg font-medium mb-1">Нажмите для загрузки</p>
                                         <p className="text-sm text-muted-foreground">
                                             JPEG, PNG или WebP до 10 МБ
+                                        </p>
+                                        <p className="mt-2 text-xs text-muted-foreground">
+                                            Можно вставить изображение из буфера обмена (Ctrl+V)
                                         </p>
                                     </motion.div>
                                 ) : (
