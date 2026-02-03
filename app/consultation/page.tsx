@@ -1,29 +1,16 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { ArrowLeft, Send, Sparkles, User, Loader2 } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import Link from "next/link";
-
-interface Message {
-    id: string;
-    role: "user" | "assistant";
-    content: string;
-}
-
-interface ConversationHistory {
-    role: "user" | "assistant";
-    content: string;
-}
+import { useChatStore } from "@/lib/store/chat-store";
+import { MessageBubble, TypingIndicator } from "@/components/chat/message-bubble";
+import { ChatInput } from "@/components/chat/chat-input";
 
 export default function ConsultationPage() {
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [input, setInput] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [history, setHistory] = useState<ConversationHistory[]>([]);
+    const { messages, isLoading, addMessage, setLoading, setError, setHistory, history } = useChatStore();
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -34,26 +21,21 @@ export default function ConsultationPage() {
         scrollToBottom();
     }, [messages]);
 
-    async function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        if (!input.trim() || isLoading) return;
-
-        const userMessage: Message = {
-            id: Date.now().toString(),
+    async function handleSubmit(userMessage: string) {
+        addMessage({
             role: "user",
-            content: input.trim(),
-        };
+            content: userMessage,
+        });
 
-        setMessages((prev) => [...prev, userMessage]);
-        setInput("");
-        setIsLoading(true);
+        setLoading(true);
+        setError(null);
 
         try {
             const response = await fetch("/api/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    message: userMessage.content,
+                    message: userMessage,
                     history,
                 }),
             });
@@ -64,25 +46,24 @@ export default function ConsultationPage() {
                 throw new Error(data.error || "Ошибка при получении ответа");
             }
 
-            const assistantMessage: Message = {
-                id: (Date.now() + 1).toString(),
+            addMessage({
                 role: "assistant",
                 content: data.response,
-            };
+            });
 
-            setMessages((prev) => [...prev, assistantMessage]);
             setHistory(data.history);
         } catch (error) {
-            const errorMessage: Message = {
-                id: (Date.now() + 1).toString(),
+            const errorMessage = error instanceof Error
+                ? error.message
+                : "Произошла ошибка. Попробуйте еще раз.";
+
+            setError(errorMessage);
+            addMessage({
                 role: "assistant",
-                content: error instanceof Error
-                    ? error.message
-                    : "Произошла ошибка. Попробуйте еще раз.",
-            };
-            setMessages((prev) => [...prev, errorMessage]);
+                content: `❌ ${errorMessage}`,
+            });
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     }
 
@@ -97,24 +78,25 @@ export default function ConsultationPage() {
         <div className="min-h-screen bg-background flex flex-col">
             {/* Background decoration */}
             <div className="fixed inset-0 -z-10 overflow-hidden">
-                <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-primary/20 blur-3xl" />
-                <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
+                <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-primary/10 blur-3xl animate-pulse" />
+                <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-accent/10 blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[800px] w-[800px] rounded-full bg-primary/5 blur-3xl" />
             </div>
 
             {/* Header */}
-            <header className="border-b border-border/50 backdrop-blur-sm bg-background/80 sticky top-0 z-40">
+            <header className="border-b border-border/50 backdrop-blur-md bg-background/80 sticky top-0 z-40 shadow-sm">
                 <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-4">
                     <Link href="/dashboard">
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" size="icon" className="hover:bg-primary/10 transition-colors">
                             <ArrowLeft className="h-5 w-5" />
                         </Button>
                     </Link>
-                    <div className="flex items-center gap-2">
-                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center ring-2 ring-primary/20">
                             <Sparkles className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                            <h1 className="font-serif text-lg">AI-Консультация</h1>
+                            <h1 className="font-serif text-lg font-semibold">AI-Консультация</h1>
                             <p className="text-xs text-muted-foreground">Персональный косметолог</p>
                         </div>
                     </div>
@@ -128,87 +110,69 @@ export default function ConsultationPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5 }}
                             className="text-center py-12"
                         >
-                            <div className="mx-auto mb-6 h-20 w-20 rounded-2xl bg-primary/10 flex items-center justify-center">
+                            <motion.div
+                                initial={{ scale: 0.8 }}
+                                animate={{ scale: 1 }}
+                                transition={{ duration: 0.5, delay: 0.2 }}
+                                className="mx-auto mb-6 h-20 w-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center ring-2 ring-primary/20 shadow-lg"
+                            >
                                 <Sparkles className="h-10 w-10 text-primary" />
-                            </div>
-                            <h2 className="font-serif text-2xl mb-2">Добро пожаловать!</h2>
-                            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+                            </motion.div>
+                            <motion.h2
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.3 }}
+                                className="font-serif text-2xl mb-2 font-semibold"
+                            >
+                                Добро пожаловать!
+                            </motion.h2>
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.4 }}
+                                className="text-muted-foreground mb-8 max-w-md mx-auto"
+                            >
                                 Я ваш персональный AI-косметолог. Задайте вопрос о уходе за кожей,
                                 и я дам персонализированные рекомендации.
-                            </p>
+                            </motion.p>
 
-                            <div className="flex flex-wrap justify-center gap-2">
-                                {suggestedQuestions.map((question) => (
-                                    <Button
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.5 }}
+                                className="flex flex-wrap justify-center gap-2"
+                            >
+                                {suggestedQuestions.map((question, i) => (
+                                    <motion.div
                                         key={question}
-                                        variant="outline"
-                                        size="sm"
-                                        className="rounded-full"
-                                        onClick={() => setInput(question)}
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: 0.6 + i * 0.1 }}
                                     >
-                                        {question}
-                                    </Button>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="rounded-full hover:bg-primary/10 hover:border-primary/50 transition-all hover:scale-105"
+                                            onClick={() => handleSubmit(question)}
+                                        >
+                                            {question}
+                                        </Button>
+                                    </motion.div>
                                 ))}
-                            </div>
+                            </motion.div>
                         </motion.div>
                     ) : (
                         <div className="space-y-4">
                             <AnimatePresence mode="popLayout">
-                                {messages.map((message) => (
-                                    <motion.div
-                                        key={message.id}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"
-                                            }`}
-                                    >
-                                        {message.role === "assistant" && (
-                                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                                                <Sparkles className="h-4 w-4 text-primary" />
-                                            </div>
-                                        )}
-
-                                        <Card
-                                            glass={message.role === "assistant"}
-                                            className={`max-w-[80%] p-4 ${message.role === "user"
-                                                ? "bg-primary text-primary-foreground"
-                                                : ""
-                                                }`}
-                                        >
-                                            <div className="whitespace-pre-wrap text-sm">
-                                                {message.content}
-                                            </div>
-                                        </Card>
-
-                                        {message.role === "user" && (
-                                            <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center shrink-0">
-                                                <User className="h-4 w-4 text-primary-foreground" />
-                                            </div>
-                                        )}
-                                    </motion.div>
+                                {messages.map((message, index) => (
+                                    <MessageBubble key={message.id} message={message} index={index} />
                                 ))}
                             </AnimatePresence>
 
-                            {isLoading && (
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    className="flex gap-3"
-                                >
-                                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                        <Sparkles className="h-4 w-4 text-primary" />
-                                    </div>
-                                    <Card glass className="p-4">
-                                        <div className="flex items-center gap-2 text-muted-foreground">
-                                            <Loader2 className="h-4 w-4 animate-spin" />
-                                            <span className="text-sm">Анализирую...</span>
-                                        </div>
-                                    </Card>
-                                </motion.div>
-                            )}
+                            {isLoading && <TypingIndicator />}
 
                             <div ref={messagesEndRef} />
                         </div>
@@ -217,26 +181,9 @@ export default function ConsultationPage() {
             </main>
 
             {/* Input */}
-            <div className="border-t border-border/50 backdrop-blur-sm bg-background/80 sticky bottom-0">
+            <div className="border-t border-border/50 backdrop-blur-md bg-background/80 sticky bottom-0 shadow-lg">
                 <div className="max-w-3xl mx-auto px-6 py-4">
-                    <form onSubmit={handleSubmit} className="flex gap-2">
-                        <Input
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            placeholder="Задайте вопрос о уходе за кожей..."
-                            className="flex-1"
-                            disabled={isLoading}
-                        />
-                        <Button
-                            type="submit"
-                            variant="gradient"
-                            size="icon"
-                            disabled={!input.trim() || isLoading}
-                            className="shrink-0"
-                        >
-                            <Send className="h-5 w-5" />
-                        </Button>
-                    </form>
+                    <ChatInput onSubmit={handleSubmit} disabled={isLoading} />
                 </div>
             </div>
         </div>
