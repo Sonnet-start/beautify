@@ -1,9 +1,8 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { signOut } from "@/app/auth/actions";
-import { Sparkles, User, Camera, Calendar, MessageCircle, LogOut } from "lucide-react";
+import { AppNavbar } from "@/components/nav/app-navbar";
+import { User, Camera, Calendar, MessageCircle } from "lucide-react";
 import Link from "next/link";
 
 export default async function DashboardPage() {
@@ -15,32 +14,38 @@ export default async function DashboardPage() {
         redirect("/auth/login");
     }
 
+    const displayName =
+        user.user_metadata?.name ??
+        user.user_metadata?.full_name ??
+        user.email ??
+        "РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ";
+
     const features = [
         {
             icon: MessageCircle,
-            title: "AI-Консультация",
-            description: "Получите персональные рекомендации",
+            title: "AI-РљРѕРЅСЃСѓР»СЊС‚Р°С†РёСЏ",
+            description: "РџРѕР»СѓС‡РёС‚Рµ РїРµСЂСЃРѕРЅР°Р»СЊРЅС‹Рµ СЂРµРєРѕРјРµРЅРґР°С†РёРё",
             href: "/consultation",
             available: true
         },
         {
             icon: Camera,
-            title: "Анализ фото",
-            description: "Загрузите фото для анализа кожи",
+            title: "РђРЅР°Р»РёР· С„РѕС‚Рѕ",
+            description: "Р—Р°РіСЂСѓР·РёС‚Рµ С„РѕС‚Рѕ РґР»СЏ Р°РЅР°Р»РёР·Р° РєРѕР¶Рё",
             href: "/analysis",
             available: true
         },
         {
             icon: Calendar,
-            title: "Календарь ухода",
-            description: "Запланируйте процедуры",
+            title: "РљР°Р»РµРЅРґР°СЂСЊ СѓС…РѕРґР°",
+            description: "Р—Р°РїР»Р°РЅРёСЂСѓР№С‚Рµ РїСЂРѕС†РµРґСѓСЂС‹",
             href: "/calendar",
             available: true
         },
         {
             icon: User,
-            title: "Мой профиль",
-            description: "Настройте данные о вашей коже",
+            title: "РњРѕР№ РїСЂРѕС„РёР»СЊ",
+            description: "РќР°СЃС‚СЂРѕР№С‚Рµ РґР°РЅРЅС‹Рµ Рѕ РІР°С€РµР№ РєРѕР¶Рµ",
             href: "/profile",
             available: true
         },
@@ -54,30 +59,16 @@ export default async function DashboardPage() {
                 <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
             </div>
 
-            {/* Header */}
-            <header className="border-b border-border/50 backdrop-blur-sm bg-background/80 sticky top-0 z-40">
-                <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <Sparkles className="h-6 w-6 text-primary" />
-                        <span className="font-serif text-xl">Мой косметолог</span>
-                    </div>
-                    <form action={signOut}>
-                        <Button variant="ghost" size="sm">
-                            <LogOut className="h-4 w-4 mr-2" />
-                            Выйти
-                        </Button>
-                    </form>
-                </div>
-            </header>
+            {/* Header */}\n            <AppNavbar variant="brand" />
 
             {/* Main content */}
             <main className="max-w-5xl mx-auto px-6 py-12">
                 <div className="mb-10">
                     <h1 className="font-serif text-4xl mb-2">
-                        Привет{user.user_metadata?.name ? `, ${user.user_metadata.name}` : ""}! 👋
+                        РџСЂРёРІРµС‚{user.user_metadata?.name ? `, ${user.user_metadata.name}` : ""}! рџ‘‹
                     </h1>
                     <p className="text-muted-foreground text-lg">
-                        Выберите, с чего хотите начать сегодня
+                        Р’С‹Р±РµСЂРёС‚Рµ, СЃ С‡РµРіРѕ С…РѕС‚РёС‚Рµ РЅР°С‡Р°С‚СЊ СЃРµРіРѕРґРЅСЏ
                     </p>
                 </div>
 
@@ -103,7 +94,7 @@ export default async function DashboardPage() {
                                         {feature.title}
                                         {!feature.available && (
                                             <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                                                Скоро
+                                                РЎРєРѕСЂРѕ
                                             </span>
                                         )}
                                     </CardTitle>
@@ -121,3 +112,4 @@ export default async function DashboardPage() {
         </div>
     );
 }
+

@@ -1,10 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Sparkles } from "lucide-react";
-import Link from "next/link";
+import { AppNavbar } from "@/components/nav/app-navbar";
+import { Sparkles } from "lucide-react";
 import { useChatStore } from "@/lib/store/chat-store";
 import { MessageBubble, TypingIndicator } from "@/components/chat/message-bubble";
 import { ChatInput } from "@/components/chat/chat-input";
@@ -45,7 +45,7 @@ export default function ConsultationPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || "Ошибка при получении ответа");
+                throw new Error(data.error || "РћС€РёР±РєР° РїСЂРё РїРѕР»СѓС‡РµРЅРёРё РѕС‚РІРµС‚Р°");
             }
 
             addMessage({
@@ -57,12 +57,12 @@ export default function ConsultationPage() {
         } catch (error) {
             const errorMessage = error instanceof Error
                 ? error.message
-                : "Произошла ошибка. Попробуйте еще раз.";
+                : "РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°. РџРѕРїСЂРѕР±СѓР№С‚Рµ РµС‰Рµ СЂР°Р·.";
 
             setError(errorMessage);
             addMessage({
                 role: "assistant",
-                content: `❌ ${errorMessage}`,
+                content: `вќЊ ${errorMessage}`,
             });
         } finally {
             setLoading(false);
@@ -70,10 +70,10 @@ export default function ConsultationPage() {
     }
 
     const suggestedQuestions = [
-        "Как ухаживать за комбинированной кожей?",
-        "Какой порядок нанесения средств?",
-        "Как бороться с расширенными порами?",
-        "Рекомендации для кожи после 30",
+        "РљР°Рє СѓС…Р°Р¶РёРІР°С‚СЊ Р·Р° РєРѕРјР±РёРЅРёСЂРѕРІР°РЅРЅРѕР№ РєРѕР¶РµР№?",
+        "РљР°РєРѕР№ РїРѕСЂСЏРґРѕРє РЅР°РЅРµСЃРµРЅРёСЏ СЃСЂРµРґСЃС‚РІ?",
+        "РљР°Рє Р±РѕСЂРѕС‚СЊСЃСЏ СЃ СЂР°СЃС€РёСЂРµРЅРЅС‹РјРё РїРѕСЂР°РјРё?",
+        "Р РµРєРѕРјРµРЅРґР°С†РёРё РґР»СЏ РєРѕР¶Рё РїРѕСЃР»Рµ 30",
     ];
 
     return (
@@ -86,24 +86,14 @@ export default function ConsultationPage() {
             </div>
 
             {/* Header */}
-            <header className="border-b border-border/50 backdrop-blur-md bg-background/80 sticky top-0 z-40 shadow-sm">
-                <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-4">
-                    <Link href="/dashboard">
-                        <Button variant="ghost" size="icon" className="hover:bg-primary/10 transition-colors">
-                            <ArrowLeft className="h-5 w-5" />
-                        </Button>
-                    </Link>
-                    <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center ring-2 ring-primary/20">
-                            <Sparkles className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                            <h1 className="font-serif text-lg font-semibold">AI-Консультация</h1>
-                            <p className="text-xs text-muted-foreground">Персональный косметолог</p>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <AppNavbar
+                variant="page"
+                title="AI-РљРѕРЅСЃСѓР»СЊС‚Р°С†РёСЏ"
+                subtitle="РџРµСЂСЃРѕРЅР°Р»СЊРЅС‹Р№ РєРѕСЃРјРµС‚РѕР»РѕРі"
+                icon={<Sparkles className="h-5 w-5 text-primary" />}
+                backHref="/dashboard"
+                containerClassName="max-w-3xl"
+            />
 
             {/* Messages */}
             <main className="flex-1 overflow-y-auto">
@@ -129,7 +119,7 @@ export default function ConsultationPage() {
                                 transition={{ delay: 0.3 }}
                                 className="font-serif text-2xl mb-2 font-semibold"
                             >
-                                Добро пожаловать!
+                                Р”РѕР±СЂРѕ РїРѕР¶Р°Р»РѕРІР°С‚СЊ!
                             </motion.h2>
                             <motion.p
                                 initial={{ opacity: 0 }}
@@ -137,8 +127,8 @@ export default function ConsultationPage() {
                                 transition={{ delay: 0.4 }}
                                 className="text-muted-foreground mb-8 max-w-md mx-auto"
                             >
-                                Я ваш персональный AI-косметолог. Задайте вопрос о уходе за кожей,
-                                и я дам персонализированные рекомендации.
+                                РЇ РІР°С€ РїРµСЂСЃРѕРЅР°Р»СЊРЅС‹Р№ AI-РєРѕСЃРјРµС‚РѕР»РѕРі. Р—Р°РґР°Р№С‚Рµ РІРѕРїСЂРѕСЃ Рѕ СѓС…РѕРґРµ Р·Р° РєРѕР¶РµР№,
+                                Рё СЏ РґР°Рј РїРµСЂСЃРѕРЅР°Р»РёР·РёСЂРѕРІР°РЅРЅС‹Рµ СЂРµРєРѕРјРµРЅРґР°С†РёРё.
                             </motion.p>
 
                             <motion.div
@@ -191,3 +181,4 @@ export default function ConsultationPage() {
         </div>
     );
 }
+

@@ -1,11 +1,11 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { AppNavbar } from "@/components/nav/app-navbar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Calendar, ChevronLeft, ChevronRight, Plus, Check } from "lucide-react";
-import Link from "next/link";
+import { Calendar, ChevronLeft, ChevronRight, Plus, Check } from "lucide-react";
 
 interface RoutineItem {
     id: string;
@@ -15,21 +15,21 @@ interface RoutineItem {
 }
 
 const defaultRoutine: RoutineItem[] = [
-    { id: "1", time: "morning", name: "Очищение", done: false },
-    { id: "2", time: "morning", name: "Тоник", done: false },
-    { id: "3", time: "morning", name: "Сыворотка", done: false },
-    { id: "4", time: "morning", name: "Увлажняющий крем", done: false },
-    { id: "5", time: "morning", name: "SPF защита", done: false },
-    { id: "6", time: "evening", name: "Очищение (двойное)", done: false },
-    { id: "7", time: "evening", name: "Тоник", done: false },
-    { id: "8", time: "evening", name: "Сыворотка/Активы", done: false },
-    { id: "9", time: "evening", name: "Ночной крем", done: false },
+    { id: "1", time: "morning", name: "РћС‡РёС‰РµРЅРёРµ", done: false },
+    { id: "2", time: "morning", name: "РўРѕРЅРёРє", done: false },
+    { id: "3", time: "morning", name: "РЎС‹РІРѕСЂРѕС‚РєР°", done: false },
+    { id: "4", time: "morning", name: "РЈРІР»Р°Р¶РЅСЏСЋС‰РёР№ РєСЂРµРј", done: false },
+    { id: "5", time: "morning", name: "SPF Р·Р°С‰РёС‚Р°", done: false },
+    { id: "6", time: "evening", name: "РћС‡РёС‰РµРЅРёРµ (РґРІРѕР№РЅРѕРµ)", done: false },
+    { id: "7", time: "evening", name: "РўРѕРЅРёРє", done: false },
+    { id: "8", time: "evening", name: "РЎС‹РІРѕСЂРѕС‚РєР°/РђРєС‚РёРІС‹", done: false },
+    { id: "9", time: "evening", name: "РќРѕС‡РЅРѕР№ РєСЂРµРј", done: false },
 ];
 
-const weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+const weekDays = ["РџРЅ", "Р’С‚", "РЎСЂ", "Р§С‚", "РџС‚", "РЎР±", "Р’СЃ"];
 const months = [
-    "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-    "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+    "РЇРЅРІР°СЂСЊ", "Р¤РµРІСЂР°Р»СЊ", "РњР°СЂС‚", "РђРїСЂРµР»СЊ", "РњР°Р№", "РСЋРЅСЊ",
+    "РСЋР»СЊ", "РђРІРіСѓСЃС‚", "РЎРµРЅС‚СЏР±СЂСЊ", "РћРєС‚СЏР±СЂСЊ", "РќРѕСЏР±СЂСЊ", "Р”РµРєР°Р±СЂСЊ"
 ];
 
 export default function CalendarPage() {
@@ -94,24 +94,14 @@ export default function CalendarPage() {
             </div>
 
             {/* Header */}
-            <header className="border-b border-border/50 backdrop-blur-sm bg-background/80 sticky top-0 z-40">
-                <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-4">
-                    <Link href="/dashboard">
-                        <Button variant="ghost" size="icon">
-                            <ArrowLeft className="h-5 w-5" />
-                        </Button>
-                    </Link>
-                    <div className="flex items-center gap-2">
-                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                            <Calendar className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                            <h1 className="font-serif text-lg">Календарь ухода</h1>
-                            <p className="text-xs text-muted-foreground">Планируйте ежедневный уход</p>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <AppNavbar
+                variant="page"
+                title="РљР°Р»РµРЅРґР°СЂСЊ СѓС…РѕРґР°"
+                subtitle="РџР»Р°РЅРёСЂСѓР№С‚Рµ РµР¶РµРґРЅРµРІРЅС‹Р№ СѓС…РѕРґ"
+                icon={<Calendar className="h-5 w-5 text-primary" />}
+                backHref="/dashboard"
+                containerClassName="max-w-3xl"
+            />
 
             {/* Main content */}
             <main className="max-w-3xl mx-auto px-6 py-12">
@@ -182,7 +172,7 @@ export default function CalendarPage() {
                         <Card glass>
                             <CardHeader className="pb-3">
                                 <CardTitle className="text-lg flex items-center gap-2">
-                                    ☀️ Утренний уход
+                                    вЂпёЏ РЈС‚СЂРµРЅРЅРёР№ СѓС…РѕРґ
                                 </CardTitle>
                                 <CardDescription>
                                     {selectedDate.toLocaleDateString("ru-RU", {
@@ -217,7 +207,7 @@ export default function CalendarPage() {
                         <Card glass>
                             <CardHeader className="pb-3">
                                 <CardTitle className="text-lg flex items-center gap-2">
-                                    🌙 Вечерний уход
+                                    рџЊ™ Р’РµС‡РµСЂРЅРёР№ СѓС…РѕРґ
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-2">
@@ -244,7 +234,7 @@ export default function CalendarPage() {
                         {/* Add custom step */}
                         <Button variant="outline" className="w-full" disabled>
                             <Plus className="mr-2 h-5 w-5" />
-                            Добавить шаг (скоро)
+                            Р”РѕР±Р°РІРёС‚СЊ С€Р°Рі (СЃРєРѕСЂРѕ)
                         </Button>
                     </div>
                 </motion.div>
@@ -252,3 +242,4 @@ export default function CalendarPage() {
         </div>
     );
 }
+

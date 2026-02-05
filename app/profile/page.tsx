@@ -1,9 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { AppNavbar } from "@/components/nav/app-navbar";
+import { User } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -40,7 +41,7 @@ export default function ProfilePage() {
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
-                    <p className="mt-4 text-muted-foreground">Загрузка...</p>
+                    <p className="mt-4 text-muted-foreground">Р—Р°РіСЂСѓР·РєР°...</p>
                 </div>
             </div>
         );
@@ -59,18 +60,13 @@ export default function ProfilePage() {
             </div>
 
             {/* Header */}
-            <header className="border-b border-border/50 backdrop-blur-md bg-background/80 sticky top-0 z-40 shadow-sm">
-                <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-4">
-                    <Link href="/dashboard">
-                        <Button variant="ghost" size="icon" className="hover:bg-primary/10 transition-colors">
-                            <ArrowLeft className="h-5 w-5" />
-                        </Button>
-                    </Link>
-                    <h1 className="font-serif text-xl font-semibold">
-                        {hasProfile ? "Мой профиль" : "Создание профиля"}
-                    </h1>
-                </div>
-            </header>
+            <AppNavbar
+                variant="page"
+                title={hasProfile ? "РњРѕР№ РїСЂРѕС„РёР»СЊ" : "РЎРѕР·РґР°РЅРёРµ РїСЂРѕС„РёР»СЏ"}
+                icon={<User className="h-5 w-5 text-primary" />}
+                backHref="/dashboard"
+                containerClassName="max-w-3xl"
+            />
 
             {/* Main content */}
             <main className="max-w-3xl mx-auto px-6 py-12">
@@ -82,11 +78,11 @@ export default function ProfilePage() {
                     {hasProfile ? (
                         <div className="text-center py-12">
                             <p className="text-muted-foreground mb-4">
-                                Вы уже создали профиль!
+                                Р’С‹ СѓР¶Рµ СЃРѕР·РґР°Р»Рё РїСЂРѕС„РёР»СЊ!
                             </p>
                             <Link href="/dashboard">
                                 <Button variant="gradient" className="glow">
-                                    Вернуться в Dashboard
+                                    Р’РµСЂРЅСѓС‚СЊСЃСЏ РІ Dashboard
                                 </Button>
                             </Link>
                         </div>
@@ -98,3 +94,4 @@ export default function ProfilePage() {
         </div>
     );
 }
+
