@@ -63,7 +63,7 @@ export default async function DashboardPage() {
       <main className="max-w-5xl mx-auto px-6 py-12">
         <div className="mb-10">
           <h1 className="font-serif text-4xl mb-2">Привет, {displayName}! 👋</h1>
-          <p className="text-muted-foreground text-lg">Выберите, с чего хотите начать сегодня</p>
+          <p className="text-muted-foreground text-base">Выберите, с чего хотите начать сегодня</p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
@@ -83,7 +83,7 @@ export default async function DashboardPage() {
                   <div className="mb-2 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
                     <feature.icon className="h-6 w-6 text-primary" />
                   </div>
-                  <CardTitle className="text-xl flex items-center gap-2">
+                  <CardTitle className="text-lg flex items-center gap-2">
                     {feature.title}
                     {!feature.available && (
                       <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-1 rounded-full">

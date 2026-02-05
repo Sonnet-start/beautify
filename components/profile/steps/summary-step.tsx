@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -30,8 +30,8 @@ export function SummaryStep({ data, onPrev, onComplete, isLoading }: SummaryStep
         >
           <Sparkles className="h-8 w-8 text-primary" />
         </motion.div>
-        <h2 className="font-serif text-2xl font-semibold">Почти готово!</h2>
-        <p className="text-muted-foreground">Проверьте ваши данные перед сохранением</p>
+        <h2 className="font-serif text-2xl font-semibold">Все готово!</h2>
+        <p className="text-muted-foreground">Проверьте вашу анкету перед сохранением</p>
       </div>
 
       <Card glass className="p-6 space-y-4">
@@ -65,10 +65,19 @@ export function SummaryStep({ data, onPrev, onComplete, isLoading }: SummaryStep
           </div>
         )}
 
-        {data.goals && (
-          <div className="flex justify-between py-2 border-b border-border/30">
-            <span className="text-muted-foreground">Цель ухода</span>
-            <span className="font-medium">{data.goals}</span>
+        {data.goals && data.goals.length > 0 && (
+          <div className="py-2 border-b border-border/30">
+            <span className="text-muted-foreground block mb-2">Цели ухода</span>
+            <div className="flex flex-wrap gap-2">
+              {data.goals.map((goal) => (
+                <span
+                  key={goal}
+                  className="text-xs px-2 py-1 rounded-full bg-accent/20 text-foreground"
+                >
+                  {goal}
+                </span>
+              ))}
+            </div>
           </div>
         )}
 
@@ -82,8 +91,8 @@ export function SummaryStep({ data, onPrev, onComplete, isLoading }: SummaryStep
 
       <Card glass className="p-4 bg-primary/5">
         <p className="text-sm text-center">
-          🎉 Отлично! Теперь AI сможет давать персонализированные рекомендации, учитывая все
-          особенности вашей кожи.
+          Все отлично! Теперь AI сможет давать персонализированные рекомендации,
+          учитывая ваши особенности кожи.
         </p>
       </Card>
 
@@ -105,7 +114,7 @@ export function SummaryStep({ data, onPrev, onComplete, isLoading }: SummaryStep
           className="w-full glow"
           disabled={isLoading}
         >
-          {isLoading ? "Сохранение..." : "Завершить"}
+          {isLoading ? "Сохраняем..." : "Сохранить"}
         </Button>
       </div>
     </motion.div>

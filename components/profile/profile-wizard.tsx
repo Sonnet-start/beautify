@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useProfileStore } from "@/lib/store/profile-store";
 import { createClient } from "@/lib/supabase/client";

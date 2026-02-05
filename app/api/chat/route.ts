@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: "Необходима авторизация" }, { status: 401 });
+      return NextResponse.json({ error: "?????????? ???????????" }, { status: 401 });
     }
 
     const body = await request.json();
@@ -24,20 +24,27 @@ export async function POST(request: NextRequest) {
     const allowedImageTypes = ["image/jpeg", "image/png", "image/webp"];
 
     if (!message || typeof message !== "string") {
-      return NextResponse.json({ error: "Сообщение обязательно" }, { status: 400 });
+      return NextResponse.json({ error: "????????? ???????????" }, { status: 400 });
     }
     if (message.length > MAX_MESSAGE_LENGTH) {
-      return NextResponse.json({ error: "Сообщение слишком длинное" }, { status: 400 });
+      return NextResponse.json({ error: "????????? ??????? ???????" }, { status: 400 });
     }
+
+    const goalsRaw = user.user_metadata?.goals;
+    const problemsRaw = user.user_metadata?.skin_problems;
 
     // Get user profile from metadata
     const userProfile: UserProfile = {
       name: user.user_metadata?.name,
       age: user.user_metadata?.age,
       skinType: user.user_metadata?.skin_type,
-      problems: user.user_metadata?.skin_problems,
+      problems: Array.isArray(problemsRaw)
+        ? problemsRaw
+        : problemsRaw
+          ? [problemsRaw]
+          : [],
       allergies: user.user_metadata?.allergies,
-      goals: user.user_metadata?.goals,
+      goals: Array.isArray(goalsRaw) ? goalsRaw : goalsRaw ? [goalsRaw] : [],
     };
 
     const safeHistory = Array.isArray(history)
@@ -59,7 +66,7 @@ export async function POST(request: NextRequest) {
 
     if (image) {
       if (typeof image !== "string") {
-        return NextResponse.json({ error: "Некорректный формат изображения" }, { status: 400 });
+        return NextResponse.json({ error: "???????????? ?????? ???????????" }, { status: 400 });
       }
 
       // Extract mimeType from base64 data URL
@@ -69,7 +76,7 @@ export async function POST(request: NextRequest) {
 
       if (!allowedImageTypes.includes(mimeType)) {
         return NextResponse.json(
-          { error: "Неподдерживаемый формат изображения. Используйте JPG, PNG или WEBP." },
+          { error: "???????????????? ?????? ???????????. ??????????? JPG, PNG ??? WEBP." },
           { status: 400 }
         );
       }
@@ -77,7 +84,7 @@ export async function POST(request: NextRequest) {
       const approxBytes = Math.ceil((base64Data.length * 3) / 4);
       if (approxBytes > MAX_IMAGE_BYTES) {
         return NextResponse.json(
-          { error: "Размер изображения не должен превышать 5 МБ" },
+          { error: "?????? ??????????? ?? ?????? ????????? 5 ??" },
           { status: 400 }
         );
       }
@@ -103,7 +110,7 @@ export async function POST(request: NextRequest) {
     console.error("AI Chat Error:", error);
 
     // Return more detailed error for debugging
-    const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка";
+    const errorMessage = error instanceof Error ? error.message : "??????????? ??????";
 
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }

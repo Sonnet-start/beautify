@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,22 +9,22 @@ const skinTypes = [
   {
     value: "Нормальная",
     label: "Нормальная",
-    description: "Сбалансированная, без проблем",
-    emoji: "😊",
+    description: "Сбалансированная, без выраженных проблем",
+    emoji: "🙂",
   },
-  { value: "Сухая", label: "Сухая", description: "Шелушение, стянутость", emoji: "🌵" },
-  { value: "Жирная", label: "Жирная", description: "Блеск, расширенные поры", emoji: "💧" },
+  { value: "Сухая", label: "Сухая", description: "Склонна к шелушению", emoji: "😌" },
+  { value: "Жирная", label: "Жирная", description: "Блеск, расширенные поры", emoji: "😅" },
   {
     value: "Комбинированная",
     label: "Комбинированная",
     description: "Т-зона жирная, щеки сухие",
-    emoji: "🌓",
+    emoji: "🤔",
   },
   {
     value: "Чувствительная",
     label: "Чувствительная",
-    description: "Покраснения, реакции",
-    emoji: "🌸",
+    description: "Легко раздражается, краснеет",
+    emoji: "😟",
   },
 ];
 
@@ -44,7 +44,7 @@ export function SkinTypeStep({ value, onChange, onNext, onPrev }: SkinTypeStepPr
       className="space-y-6"
     >
       <div className="text-center space-y-2">
-        <h2 className="font-serif text-2xl font-semibold">Тип вашей кожи</h2>
+        <h2 className="font-serif text-2xl font-semibold">Ваш тип кожи</h2>
         <p className="text-muted-foreground">Выберите наиболее подходящий вариант</p>
       </div>
 
@@ -58,14 +58,12 @@ export function SkinTypeStep({ value, onChange, onNext, onPrev }: SkinTypeStepPr
           >
             <Card
               glass={value === type.value}
-              className={`
-                p-4 cursor-pointer transition-all hover:scale-[1.02]
-                ${
-                  value === type.value
-                    ? "ring-2 ring-primary shadow-lg shadow-primary/20"
-                    : "hover:shadow-md"
-                }
-              `}
+              className={
+                "p-4 cursor-pointer transition-all hover:scale-[1.02] " +
+                (value === type.value
+                  ? "ring-2 ring-primary shadow-lg shadow-primary/20"
+                  : "hover:shadow-md")
+              }
               onClick={() => onChange(type.value)}
             >
               <div className="flex items-center gap-4">
@@ -122,3 +120,5 @@ export function SkinTypeStep({ value, onChange, onNext, onPrev }: SkinTypeStepPr
     </motion.div>
   );
 }
+
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -6,14 +6,14 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const commonProblems = [
-  { value: "Акне", label: "Акне", emoji: "🔴" },
-  { value: "Морщины", label: "Морщины", emoji: "📏" },
-  { value: "Пигментация", label: "Пигментация", emoji: "☀️" },
-  { value: "Покраснения", label: "Покраснения", emoji: "🌹" },
-  { value: "Расширенные поры", label: "Расширенные поры", emoji: "🔍" },
-  { value: "Сухость", label: "Сухость/шелушение", emoji: "🏜️" },
-  { value: "Жирный блеск", label: "Жирный блеск", emoji: "✨" },
-  { value: "Тусклость", label: "Тусклость", emoji: "🌫️" },
+  { value: "Акне", label: "Акне", emoji: "😣" },
+  { value: "Прыщи", label: "Прыщи", emoji: "😬" },
+  { value: "Пигментация", label: "Пигментация", emoji: "🌞" },
+  { value: "Морщины", label: "Морщины", emoji: "🧓" },
+  { value: "Расширенные поры", label: "Расширенные поры", emoji: "🫧" },
+  { value: "Сухость/шелушение", label: "Сухость/шелушение", emoji: "🌵" },
+  { value: "Тусклый тон", label: "Тусклый тон", emoji: "🌫️" },
+  { value: "Покраснение", label: "Покраснение", emoji: "😡" },
 ];
 
 interface ProblemsStepProps {
@@ -41,7 +41,9 @@ export function ProblemsStep({ value = [], onChange, onNext, onPrev }: ProblemsS
     >
       <div className="text-center space-y-2">
         <h2 className="font-serif text-2xl font-semibold">Проблемы кожи</h2>
-        <p className="text-muted-foreground">Выберите все, что вас беспокоит (можно несколько)</p>
+        <p className="text-muted-foreground">
+          Выберите все, что вас беспокоит (можно несколько)
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -57,14 +59,12 @@ export function ProblemsStep({ value = [], onChange, onNext, onPrev }: ProblemsS
             >
               <Card
                 glass={isSelected}
-                className={`
-                  p-4 cursor-pointer transition-all hover:scale-105
-                  ${
-                    isSelected
-                      ? "ring-2 ring-primary shadow-lg shadow-primary/20"
-                      : "hover:shadow-md"
-                  }
-                `}
+                className={
+                  "p-4 cursor-pointer transition-all hover:scale-105 " +
+                  (isSelected
+                    ? "ring-2 ring-primary shadow-lg shadow-primary/20"
+                    : "hover:shadow-md")
+                }
                 onClick={() => toggleProblem(problem.value)}
               >
                 <div className="text-center space-y-2">
@@ -100,3 +100,5 @@ export function ProblemsStep({ value = [], onChange, onNext, onPrev }: ProblemsS
     </motion.div>
   );
 }
+
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -6,10 +6,10 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const ageRanges = [
-  { value: "18-25", label: "18-25 лет", emoji: "✨" },
-  { value: "26-35", label: "26-35 лет", emoji: "🌟" },
-  { value: "36-45", label: "36-45 лет", emoji: "💫" },
-  { value: "46+", label: "46+ лет", emoji: "👑" },
+  { value: "18-25", label: "18-25 лет", emoji: "🙂" },
+  { value: "26-35", label: "26-35 лет", emoji: "😌" },
+  { value: "36-45", label: "36-45 лет", emoji: "🙂" },
+  { value: "46+", label: "46+ лет", emoji: "😌" },
 ];
 
 interface AgeStepProps {
@@ -29,7 +29,9 @@ export function AgeStep({ value, onChange, onNext, onPrev }: AgeStepProps) {
     >
       <div className="text-center space-y-2">
         <h2 className="font-serif text-2xl font-semibold">Ваш возраст</h2>
-        <p className="text-muted-foreground">Потребности кожи меняются с возрастом</p>
+        <p className="text-muted-foreground">
+          Он помогает подобрать уход с учетом особенностей кожи
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -42,14 +44,12 @@ export function AgeStep({ value, onChange, onNext, onPrev }: AgeStepProps) {
           >
             <Card
               glass={value === range.value}
-              className={`
-                p-6 cursor-pointer transition-all hover:scale-105
-                ${
-                  value === range.value
-                    ? "ring-2 ring-primary shadow-lg shadow-primary/20"
-                    : "hover:shadow-md"
-                }
-              `}
+              className={
+                "p-6 cursor-pointer transition-all hover:scale-105 " +
+                (value === range.value
+                  ? "ring-2 ring-primary shadow-lg shadow-primary/20"
+                  : "hover:shadow-md")
+              }
               onClick={() => onChange(range.value)}
             >
               <div className="text-center space-y-2">
@@ -80,3 +80,5 @@ export function AgeStep({ value, onChange, onNext, onPrev }: AgeStepProps) {
     </motion.div>
   );
 }
+
+

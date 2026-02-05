@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Eye, EyeOff, Lock, Mail, Sparkles, User } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { signInWithGitHub, signup } from "../actions";
+import { signInWithGitHub, signInWithGoogle, signup } from "../actions";
 
 // GitHub icon component
 function GitHubIcon({ className }: { className?: string }) {
@@ -20,11 +20,35 @@ function GitHubIcon({ className }: { className?: string }) {
   );
 }
 
+function GoogleIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" role="img" aria-label="Google">
+      <path
+        fill="#EA4335"
+        d="M12 10.2v3.9h5.4c-.24 1.2-1.44 3.6-5.4 3.6-3.24 0-5.88-2.7-5.88-6s2.64-6 5.88-6c1.86 0 3.1.78 3.8 1.44l2.58-2.46C16.8 3 14.64 2 12 2 6.96 2 2.88 6.04 2.88 11s4.08 9 9.12 9c5.28 0 8.76-3.72 8.76-8.94 0-.6-.06-1.02-.12-1.44H12z"
+      />
+      <path
+        fill="#34A853"
+        d="M3.9 7.2l3.18 2.34C7.92 7.5 9.78 6 12 6c1.86 0 3.1.78 3.8 1.44l2.58-2.46C16.8 3 14.64 2 12 2 8.34 2 5.16 4.14 3.9 7.2z"
+      />
+      <path
+        fill="#4A90E2"
+        d="M12 20c2.64 0 4.8-.84 6.4-2.28l-3.12-2.52c-.84.6-1.98 1.02-3.28 1.02-2.28 0-4.2-1.5-4.92-3.6l-3.24 2.52C5.04 18.06 8.34 20 12 20z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M6.96 12.6A5.9 5.9 0 0 1 6.6 11c0-.54.12-1.08.3-1.56L3.72 7.2A8.96 8.96 0 0 0 3 11c0 1.5.36 2.94 1.02 4.2l2.94-2.6z"
+      />
+    </svg>
+  );
+}
+
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isGitHubLoading, setIsGitHubLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   async function handleSubmit(formData: FormData) {
     setIsLoading(true);
@@ -47,6 +71,18 @@ export default function SignupPage() {
     if (result?.error) {
       setError(result.error);
       setIsGitHubLoading(false);
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setIsGoogleLoading(true);
+    setError(null);
+
+    const result = await signInWithGoogle();
+
+    if (result?.error) {
+      setError(result.error);
+      setIsGoogleLoading(false);
     }
   }
 
@@ -83,18 +119,32 @@ export default function SignupPage() {
           </CardHeader>
 
           <CardContent className="space-y-6">
-            {/* GitHub OAuth Button */}
-            <Button
-              type="button"
-              variant="outline"
-              size="lg"
-              className="w-full"
-              onClick={handleGitHubLogin}
-              disabled={isGitHubLoading}
-            >
-              <GitHubIcon className="mr-2 h-5 w-5" />
-              {isGitHubLoading ? "Перенаправление..." : "Продолжить с GitHub"}
-            </Button>
+            {/* OAuth Buttons */}
+            <div className="space-y-3">
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="w-full"
+                onClick={handleGoogleLogin}
+                disabled={isGoogleLoading}
+              >
+                <GoogleIcon className="mr-2 h-5 w-5" />
+                {isGoogleLoading ? "Перенаправление..." : "Продолжить с Google"}
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="w-full"
+                onClick={handleGitHubLogin}
+                disabled={isGitHubLoading}
+              >
+                <GitHubIcon className="mr-2 h-5 w-5" />
+                {isGitHubLoading ? "Перенаправление..." : "Продолжить с GitHub"}
+              </Button>
+            </div>
 
             {/* Divider */}
             <div className="relative">

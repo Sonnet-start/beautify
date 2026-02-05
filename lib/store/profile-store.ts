@@ -6,7 +6,7 @@ export interface ProfileData {
   skinType?: string;
   problems?: string[];
   allergies?: string;
-  goals?: string;
+  goals?: string[];
 }
 
 interface ProfileStoreState {
@@ -29,6 +29,7 @@ export const useProfileStore = create<ProfileStoreState>((set) => ({
   totalSteps: 6,
   profileData: {
     problems: [],
+    goals: [],
   },
   isComplete: false,
 
@@ -52,7 +53,7 @@ export const useProfileStore = create<ProfileStoreState>((set) => ({
   resetProfile: () =>
     set({
       currentStep: 0,
-      profileData: { problems: [] },
+      profileData: { problems: [], goals: [] },
       isComplete: false,
     }),
 

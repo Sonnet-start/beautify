@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -29,19 +29,21 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
 
         <div>
           <h2 className="font-serif text-3xl font-semibold mb-2">Добро пожаловать!</h2>
-          <p className="text-muted-foreground text-lg">Давайте создадим ваш персональный профиль</p>
+          <p className="text-muted-foreground text-lg">
+            Давайте расскажем о потребностях кожи
+          </p>
         </div>
       </div>
 
       <Card glass className="p-6">
         <div className="space-y-4 text-sm text-muted-foreground">
           <p>
-            Чтобы AI-косметолог давал максимально точные рекомендации, нам нужно узнать о вашей коже
-            немного больше.
+            Ваш AI-ассистент хочет персонализировать рекомендации, для этого важно понять
+            ваш тип кожи и основные проблемы.
           </p>
           <p>
-            Это займет всего <strong className="text-foreground">2-3 минуты</strong>. Все данные
-            конфиденциальны и используются только для персонализации советов.
+            Это займет всего <strong className="text-foreground">2-3 минуты</strong>. Вы
+            сможете изменить и дополнить данные позже в профиле.
           </p>
         </div>
       </Card>

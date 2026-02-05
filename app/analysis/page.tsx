@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +7,8 @@ import { ArrowLeft, Camera, Image as ImageIcon, Loader2, Sparkles, Upload, X } f
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function AnalysisPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -23,14 +25,12 @@ export default function AnalysisPage() {
   }
 
   const handleImageFile = useCallback((file: File) => {
-    // Validate file type
     const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
     if (!allowedTypes.includes(file.type)) {
-      setError("Поддерживаются только JPEG, PNG и WebP");
+      setError("Поддерживаются форматы JPEG, PNG и WebP");
       return;
     }
 
-    // Validate file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
       setError("Максимальный размер файла: 10 МБ");
       return;
@@ -110,7 +110,7 @@ export default function AnalysisPage() {
 
       setAnalysis(data.analysis);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Произошла ошибка");
+      setError(err instanceof Error ? err.message : "Неизвестная ошибка");
     } finally {
       setIsAnalyzing(false);
     }
@@ -137,8 +137,8 @@ export default function AnalysisPage() {
               <Camera className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h1 className="font-serif text-lg">Анализ фото</h1>
-              <p className="text-xs text-muted-foreground">AI-диагностика кожи</p>
+              <h1 className="font-serif text-2xl">Анализ кожи</h1>
+              <p className="text-xs text-muted-foreground">AI-анализ состояния кожи</p>
             </div>
           </div>
         </div>
@@ -154,10 +154,8 @@ export default function AnalysisPage() {
           {/* Upload area */}
           <Card glass>
             <CardHeader>
-              <CardTitle>Загрузите фото</CardTitle>
-              <CardDescription>
-                Сделайте фото лица при хорошем освещении для точного анализа
-              </CardDescription>
+            <CardTitle className="text-lg">Загрузите фото</CardTitle>
+              <CardDescription>Сделайте фото лица для анализа состояния кожи</CardDescription>
             </CardHeader>
             <CardContent onPaste={handlePaste}>
               <input
@@ -266,15 +264,41 @@ export default function AnalysisPage() {
                         <Sparkles className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <CardTitle>Результат анализа</CardTitle>
-                        <CardDescription>AI-рекомендации на основе фото</CardDescription>
+                        <CardTitle className="text-lg">Результаты анализа</CardTitle>
+                        <CardDescription>AI-рекомендации по уходу за кожей</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="prose prose-sm max-w-none dark:prose-invert">
-                      <div className="whitespace-pre-wrap">{analysis}</div>
-                    </div>
+                    <ReactMarkdown
+                      className="markdown text-base leading-relaxed"
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        h1: ({ children }) => <h1 className="text-2xl font-semibold tracking-tight">{children}</h1>,
+                        h2: ({ children }) => <h2 className="text-lg font-semibold tracking-tight">{children}</h2>,
+                        h3: ({ children }) => <h3 className="text-base font-semibold tracking-tight">{children}</h3>,
+                        p: ({ children }) => <p className="leading-relaxed">{children}</p>,
+                        ul: ({ children }) => <ul className="list-disc pl-5 space-y-1">{children}</ul>,
+                        ol: ({ children }) => <ol className="list-decimal pl-5 space-y-1">{children}</ol>,
+                        li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                        hr: () => <hr className="border-border/60" />,
+                        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                        em: ({ children }) => <em className="italic">{children}</em>,
+                        blockquote: ({ children }) => (
+                          <blockquote className="border-l-2 border-primary/40 pl-3 text-muted-foreground">
+                            {children}
+                          </blockquote>
+                        ),
+                        code: ({ children }) => (
+                          <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">{children}</code>
+                        ),
+                        pre: ({ children }) => (
+                          <pre className="overflow-x-auto rounded-lg bg-muted p-3 text-xs">{children}</pre>
+                        ),
+                      }}
+                    >
+                      {analysis}
+                    </ReactMarkdown>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -291,11 +315,11 @@ export default function AnalysisPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>• Используйте естественное освещение</li>
-                  <li>• Снимайте без макияжа</li>
-                  <li>• Держите камеру на расстоянии 30-40 см</li>
-                  <li>• Убедитесь, что лицо полностью в кадре</li>
+                <ul className="space-y-2 text-sm text-muted-foreground list-disc pl-5">
+                  <li>Используйте хорошее освещение</li>
+                  <li>Снимайте без макияжа</li>
+                  <li>Держите камеру на расстоянии 30-40 см</li>
+                  <li>Убедитесь, что лицо в фокусе и по центру</li>
                 </ul>
               </CardContent>
             </Card>

@@ -85,7 +85,7 @@ export function AppNavbar({
         {variant === "brand" ? (
           <div className="flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-primary" />
-            <span className="font-serif text-xl">Мой косметолог</span>
+            <span className="font-serif text-2xl">Мой косметолог</span>
           </div>
         ) : (
           <div className="flex items-center gap-4">
@@ -101,7 +101,7 @@ export function AppNavbar({
                 </div>
               ) : null}
               <div>
-                {title ? <h1 className="font-serif text-lg font-semibold">{title}</h1> : null}
+                {title ? <h1 className="font-serif text-2xl font-semibold">{title}</h1> : null}
                 {subtitle ? <p className="text-xs text-muted-foreground">{subtitle}</p> : null}
               </div>
             </div>

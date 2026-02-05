@@ -177,3 +177,32 @@ body {
 .dark .glow {
   box-shadow: 0 0 20px oklch(0.8 0.18 349 / 0.4), 0 0 40px oklch(0.8 0.18 349 / 0.25);
 }
+
+/* Markdown rendering for chat messages */
+.markdown {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  margin: 0;
+}
+
+.markdown p {
+  margin: 0;
+}
+
+.markdown ul,
+.markdown ol {
+  margin: 0;
+}
+
+.markdown hr {
+  margin: 0.25rem 0;
+}
+
+.markdown a {
+  text-decoration: underline;
+}
