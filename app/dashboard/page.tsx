@@ -1,8 +1,6 @@
-﻿import { AppNavbar } from "@/components/nav/app-navbar";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+﻿import { FeatureCard } from "@/components/dashboard/feature-card";
+import { AppNavbar } from "@/components/nav/app-navbar";
 import { createClient } from "@/lib/supabase/server";
-import { Calendar, Camera, MessageCircle, User } from "lucide-react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
@@ -21,32 +19,36 @@ export default async function DashboardPage() {
 
   const features = [
     {
-      icon: MessageCircle,
-      title: "AI‑Консультация",
+      iconName: "MessageCircle" as const,
+      title: "ИИ‑Консультация",
       description: "Получите персональные рекомендации",
       href: "/consultation",
       available: true,
+      requiresDisclaimer: true,
     },
     {
-      icon: Camera,
+      iconName: "Camera" as const,
       title: "Анализ фото",
       description: "Загрузите фото для анализа кожи",
       href: "/analysis",
       available: true,
+      requiresDisclaimer: true,
     },
     {
-      icon: Calendar,
+      iconName: "Calendar" as const,
       title: "Календарь ухода",
       description: "Запланируйте процедуры",
       href: "/calendar",
       available: true,
+      requiresDisclaimer: false,
     },
     {
-      icon: User,
+      iconName: "User" as const,
       title: "Мой профиль",
       description: "Настройте данные о вашей коже",
       href: "/profile",
       available: true,
+      requiresDisclaimer: false,
     },
   ];
 
@@ -68,35 +70,15 @@ export default async function DashboardPage() {
 
         <div className="grid gap-6 md:grid-cols-2">
           {features.map((feature) => (
-            <Link
+            <FeatureCard
               key={feature.title}
-              href={feature.available ? feature.href : "#"}
-              className={feature.available ? "" : "cursor-not-allowed"}
-            >
-              <Card
-                glass
-                className={`h-full transition-all duration-300 ${
-                  feature.available ? "hover:shadow-xl hover:scale-[1.02]" : "opacity-60"
-                }`}
-              >
-                <CardHeader>
-                  <div className="mb-2 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-                    <feature.icon className="h-6 w-6 text-primary" />
-                  </div>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    {feature.title}
-                    {!feature.available && (
-                      <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                        Скоро
-                      </span>
-                    )}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base">{feature.description}</CardDescription>
-                </CardContent>
-              </Card>
-            </Link>
+              iconName={feature.iconName}
+              title={feature.title}
+              description={feature.description}
+              href={feature.href}
+              available={feature.available}
+              requiresDisclaimer={feature.requiresDisclaimer}
+            />
           ))}
         </div>
       </main>

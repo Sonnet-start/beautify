@@ -1,7 +1,8 @@
+import type { Database } from "@/lib/supabase/database.types";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-type CookieOptions = Parameters<ReturnType<typeof cookies>["set"]>[2];
+type CookieOptions = Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2];
 type CookieToSet = { name: string; value: string; options?: CookieOptions };
 
 export async function createClient() {
@@ -18,7 +19,7 @@ export async function createClient() {
     );
   }
 
-  return createServerClient(supabaseUrl, supabaseKey, {
+  return createServerClient<Database>(supabaseUrl, supabaseKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll();

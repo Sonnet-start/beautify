@@ -30,7 +30,7 @@ export function SummaryStep({ data, onPrev, onComplete, isLoading }: SummaryStep
         >
           <Sparkles className="h-8 w-8 text-primary" />
         </motion.div>
-        <h2 className="font-serif text-2xl font-semibold">Все готово!</h2>
+        <h2 className="text-2xl font-semibold">Все готово!</h2>
         <p className="text-muted-foreground">Проверьте вашу анкету перед сохранением</p>
       </div>
 
@@ -91,8 +91,8 @@ export function SummaryStep({ data, onPrev, onComplete, isLoading }: SummaryStep
 
       <Card glass className="p-4 bg-primary/5">
         <p className="text-sm text-center">
-          Все отлично! Теперь AI сможет давать персонализированные рекомендации,
-          учитывая ваши особенности кожи.
+          Все отлично! Теперь AI сможет давать персонализированные рекомендации, учитывая ваши
+          особенности кожи.
         </p>
       </Card>
 

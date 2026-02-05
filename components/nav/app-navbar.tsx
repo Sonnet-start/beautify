@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 
+import { ThemeToggle } from "@/components/nav/theme-toggle";
 import { UserMenu } from "@/components/nav/user-menu";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
@@ -17,6 +18,7 @@ type AppNavbarProps = {
   icon?: ReactNode;
   backHref?: string;
   containerClassName?: string;
+  userName?: string | null;
 };
 
 function getInitials(name: string) {
@@ -36,22 +38,52 @@ export function AppNavbar({
   icon,
   backHref = "/dashboard",
   containerClassName,
+  userName,
 }: AppNavbarProps) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
-  const [displayName, setDisplayName] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string | null>(userName || null);
+  const [isLoading, setIsLoading] = useState(!userName);
 
   useEffect(() => {
+    // If userName is provided, use it and skip loading
+    if (userName) {
+      setDisplayName(userName);
+      setIsLoading(false);
+      return;
+    }
+
     let isMounted = true;
 
-    async function loadUser() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    // Subscribe to auth state changes to keep navbar in sync
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!isMounted) return;
+
+      if (!session?.user) {
+        setDisplayName(null);
+        setIsLoading(false);
+        return;
+      }
+
+      const name =
+        session.user.user_metadata?.name ??
+        session.user.user_metadata?.full_name ??
+        session.user.email ??
+        "Пользователь";
+
+      setDisplayName(name);
+      setIsLoading(false);
+    });
+
+    // Initial load
+    supabase.auth.getUser().then(({ data: { user } }) => {
       if (!isMounted) return;
 
       if (!user) {
         setDisplayName(null);
+        setIsLoading(false);
         return;
       }
 
@@ -59,14 +91,14 @@ export function AppNavbar({
         user.user_metadata?.name ?? user.user_metadata?.full_name ?? user.email ?? "Пользователь";
 
       setDisplayName(name);
-    }
-
-    loadUser();
+      setIsLoading(false);
+    });
 
     return () => {
       isMounted = false;
+      subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, [supabase, userName]);
 
   async function handleSignOut() {
     await supabase.auth.signOut();
@@ -91,7 +123,7 @@ export function AppNavbar({
           <div className="flex items-center gap-4">
             <Link href={backHref}>
               <Button variant="ghost" size="icon" className="hover:bg-primary/10 transition-colors">
-                <ArrowLeft className="h-5 w-5" />
+                <ArrowLeft className="h-6 w-6" />
               </Button>
             </Link>
             <div className="flex items-center gap-3">
@@ -101,20 +133,25 @@ export function AppNavbar({
                 </div>
               ) : null}
               <div>
-                {title ? <h1 className="font-serif text-2xl font-semibold">{title}</h1> : null}
-                {subtitle ? <p className="text-xs text-muted-foreground">{subtitle}</p> : null}
+                {title ? <h1 className="font-serif text-4xl font-semibold">{title}</h1> : null}
+                {subtitle ? <p className="text-base text-muted-foreground">{subtitle}</p> : null}
               </div>
             </div>
           </div>
         )}
 
-        {displayName ? (
-          <UserMenu
-            initials={getInitials(displayName)}
-            name={displayName}
-            onSignOut={handleSignOut}
-          />
-        ) : null}
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          {isLoading ? (
+            <div className="h-10 w-10 rounded-full bg-muted animate-pulse" />
+          ) : displayName ? (
+            <UserMenu
+              initials={getInitials(displayName)}
+              name={displayName}
+              onSignOut={handleSignOut}
+            />
+          ) : null}
+        </div>
       </div>
     </header>
   );

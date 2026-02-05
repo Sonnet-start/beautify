@@ -28,7 +28,7 @@ export function AgeStep({ value, onChange, onNext, onPrev }: AgeStepProps) {
       className="space-y-6"
     >
       <div className="text-center space-y-2">
-        <h2 className="font-serif text-2xl font-semibold">Ваш возраст</h2>
+        <h2 className="text-2xl font-semibold">Ваш возраст</h2>
         <p className="text-muted-foreground">
           Он помогает подобрать уход с учетом особенностей кожи
         </p>
@@ -44,12 +44,11 @@ export function AgeStep({ value, onChange, onNext, onPrev }: AgeStepProps) {
           >
             <Card
               glass={value === range.value}
-              className={
-                "p-6 cursor-pointer transition-all hover:scale-105 " +
-                (value === range.value
+              className={`p-6 cursor-pointer transition-all hover:scale-105 ${
+                value === range.value
                   ? "ring-2 ring-primary shadow-lg shadow-primary/20"
-                  : "hover:shadow-md")
-              }
+                  : "hover:shadow-md"
+              }`}
               onClick={() => onChange(range.value)}
             >
               <div className="text-center space-y-2">
@@ -80,5 +79,3 @@ export function AgeStep({ value, onChange, onNext, onPrev }: AgeStepProps) {
     </motion.div>
   );
 }
-
-

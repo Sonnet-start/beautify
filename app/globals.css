@@ -146,6 +146,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  accent-color: var(--primary);
 }
 
 /* Glassmorphism utilities */

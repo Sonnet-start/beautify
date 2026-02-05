@@ -13,7 +13,11 @@ import { SkinTypeStep } from "./steps/skin-type-step";
 import { SummaryStep } from "./steps/summary-step";
 import { WelcomeStep } from "./steps/welcome-step";
 
-export function ProfileWizard() {
+interface ProfileWizardProps {
+  onComplete?: () => void;
+}
+
+export function ProfileWizard({ onComplete }: ProfileWizardProps) {
   const router = useRouter();
   const supabase = createClient();
   const [isLoading, setIsLoading] = useState(false);
@@ -25,23 +29,41 @@ export function ProfileWizard() {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.updateUser({
-        data: {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error("No user");
+
+      console.log("Saving profile for user:", user.id, profileData);
+
+      // Save to profiles table
+      const { error } = await supabase
+        .from("profiles")
+        .update({
           age: profileData.age,
           skin_type: profileData.skinType,
           skin_problems: profileData.problems,
           allergies: profileData.allergies,
           goals: profileData.goals,
-        },
-      });
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", user.id);
 
       if (error) throw error;
 
       setComplete(true);
-      router.push("/dashboard");
+
+      // Give UI a moment to show success state before navigation
+      setTimeout(() => {
+        if (onComplete) {
+          onComplete();
+        } else {
+          router.push("/profile");
+        }
+      }, 500);
     } catch (error) {
       console.error("Profile save error:", error);
-      alert("Ошибка при сохранении профиля. Попробуйте еще раз.");
+      alert("Ошибка при сохранении профиля. Попробуйте обновить страницу.");
     } finally {
       setIsLoading(false);
     }

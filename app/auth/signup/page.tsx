@@ -111,7 +111,7 @@ export default function SignupPage() {
               <Sparkles className="h-8 w-8 text-primary" />
             </motion.div>
             <div>
-              <CardTitle className="font-serif text-3xl">Создать аккаунт</CardTitle>
+              <CardTitle className="font-serif text-4xl">Создать аккаунт</CardTitle>
               <CardDescription className="text-base mt-2">
                 Начните свой путь к идеальной коже
               </CardDescription>

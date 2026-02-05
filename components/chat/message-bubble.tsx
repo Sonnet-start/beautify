@@ -57,9 +57,15 @@ export function MessageBubble({ message, index }: MessageBubbleProps) {
           className="markdown text-base leading-relaxed"
           remarkPlugins={[remarkGfm]}
           components={{
-            h1: ({ children }) => <h1 className="text-2xl font-semibold tracking-tight">{children}</h1>,
-            h2: ({ children }) => <h2 className="text-lg font-semibold tracking-tight">{children}</h2>,
-            h3: ({ children }) => <h3 className="text-base font-semibold tracking-tight">{children}</h3>,
+            h1: ({ children }) => (
+              <h1 className="text-2xl font-semibold tracking-tight">{children}</h1>
+            ),
+            h2: ({ children }) => (
+              <h2 className="text-lg font-semibold tracking-tight">{children}</h2>
+            ),
+            h3: ({ children }) => (
+              <h3 className="text-base font-semibold tracking-tight">{children}</h3>
+            ),
             p: ({ children }) => <p className="leading-relaxed">{children}</p>,
             ul: ({ children }) => <ul className="list-disc pl-5 space-y-1">{children}</ul>,
             ol: ({ children }) => <ol className="list-decimal pl-5 space-y-1">{children}</ol>,
@@ -113,4 +119,3 @@ export function TypingIndicator() {
     </motion.div>
   );
 }
-

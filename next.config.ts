@@ -8,6 +8,15 @@ const nextConfig: NextConfig = {
     "tree-sitter-bash",
     "web-tree-sitter",
   ],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+        pathname: "/storage/v1/object/**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

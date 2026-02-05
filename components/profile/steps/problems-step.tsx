@@ -40,10 +40,8 @@ export function ProblemsStep({ value = [], onChange, onNext, onPrev }: ProblemsS
       className="space-y-6"
     >
       <div className="text-center space-y-2">
-        <h2 className="font-serif text-2xl font-semibold">Проблемы кожи</h2>
-        <p className="text-muted-foreground">
-          Выберите все, что вас беспокоит (можно несколько)
-        </p>
+        <h2 className="text-2xl font-semibold">Проблемы кожи</h2>
+        <p className="text-muted-foreground">Выберите все, что вас беспокоит (можно несколько)</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -59,12 +57,9 @@ export function ProblemsStep({ value = [], onChange, onNext, onPrev }: ProblemsS
             >
               <Card
                 glass={isSelected}
-                className={
-                  "p-4 cursor-pointer transition-all hover:scale-105 " +
-                  (isSelected
-                    ? "ring-2 ring-primary shadow-lg shadow-primary/20"
-                    : "hover:shadow-md")
-                }
+                className={`p-4 cursor-pointer transition-all hover:scale-105 ${
+                  isSelected ? "ring-2 ring-primary shadow-lg shadow-primary/20" : "hover:shadow-md"
+                }`}
                 onClick={() => toggleProblem(problem.value)}
               >
                 <div className="text-center space-y-2">
@@ -100,5 +95,3 @@ export function ProblemsStep({ value = [], onChange, onNext, onPrev }: ProblemsS
     </motion.div>
   );
 }
-
-

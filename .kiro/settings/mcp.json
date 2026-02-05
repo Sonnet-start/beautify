@@ -1,0 +1,40 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.supabase.com/mcp?project_ref=gtdylikhsujjpczlgodd"
+      ],
+      "disabled": false,
+      "autoApprove": [
+        "list_tables",
+        "execute_sql",
+        "list_edge_functions",
+        "get_edge_function",
+        "list_extensions",
+        "get_publishable_keys",
+        "apply_migration",
+        "generate_typescript_types",
+        "list_migrations",
+        "get_logs"
+      ]
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": [
+        "shadcn@latest",
+        "mcp"
+      ],
+      "disabled": false,
+      "autoApprove": [
+        "search_items_in_registries",
+        "get_add_command_for_items",
+        "get_item_examples_from_registries",
+        "view_items_in_registries",
+        "get_project_registries"
+      ]
+    }
+  }
+}

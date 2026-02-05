@@ -26,7 +26,7 @@ export default function DesignDemoPage() {
   const features = [
     {
       icon: Camera,
-      title: "AI-анализ фото",
+      title: "ИИ-анализ фото",
       description: "Загрузите фото кожи для детального анализа",
     },
     {
@@ -76,14 +76,14 @@ export default function DesignDemoPage() {
             className="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm font-medium text-primary"
           >
             <Sparkles className="h-4 w-4" />
-            AI-powered косметология
+            ИИ-косметология
           </motion.div>
 
-          <h1 className="font-serif text-5xl font-normal tracking-tight text-foreground lg:text-6xl">
+          <h1 className="font-serif text-4xl font-normal tracking-tight text-foreground">
             Мой личный <span className="gradient-text">косметолог</span>
           </h1>
 
-          <p className="mt-6 text-lg leading-8 text-muted-foreground">
+          <p className="mt-6 text-base leading-7 text-muted-foreground">
             Получите персонализированные рекомендации по уходу за кожей от искусственного
             интеллекта. Профессиональный уход доступен каждому.
           </p>
@@ -107,7 +107,7 @@ export default function DesignDemoPage() {
         <div className="grid gap-8 md:grid-cols-2">
           <Card glass>
             <CardHeader>
-              <CardTitle className="font-serif text-2xl">Tenor Sans</CardTitle>
+              <CardTitle className="font-serif text-lg">Tenor Sans</CardTitle>
               <CardDescription>Акцентный шрифт для заголовков</CardDescription>
             </CardHeader>
             <CardContent>
@@ -118,7 +118,7 @@ export default function DesignDemoPage() {
 
           <Card glass>
             <CardHeader>
-              <CardTitle>Noto Sans</CardTitle>
+              <CardTitle className="text-lg">Noto Sans</CardTitle>
               <CardDescription>Основной шрифт для текста</CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">

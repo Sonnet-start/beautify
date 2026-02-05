@@ -4,16 +4,36 @@ import { ChatInput } from "@/components/chat/chat-input";
 import { MessageBubble, TypingIndicator } from "@/components/chat/message-bubble";
 import { AppNavbar } from "@/components/nav/app-navbar";
 import { Button } from "@/components/ui/button";
-import { useChatStore } from "@/lib/store/chat-store";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { type ConversationHistory, type Message, useChatStore } from "@/lib/store/chat-store";
 import { AnimatePresence, motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
-import { useCallback, useEffect, useRef } from "react";
+import { Clock, MessageSquare, Sparkles } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+interface ChatSession {
+  id: string;
+  title: string | null;
+  created_at: string;
+  chat_messages: { count: number }[];
+}
 
 export default function ConsultationPage() {
-  const { messages, isLoading, addMessage, setLoading, setError, setHistory, history } =
-    useChatStore();
+  const {
+    messages,
+    isLoading,
+    addMessage,
+    setLoading,
+    setError,
+    setHistory,
+    history,
+    sessionId,
+    setSessionId,
+    setMessages,
+  } = useChatStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messageCount = messages.length;
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [_isLoadingSessions, setIsLoadingSessions] = useState(true);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -24,6 +44,69 @@ export default function ConsultationPage() {
       scrollToBottom();
     }
   }, [messageCount, scrollToBottom]);
+
+  // Load sessions on mount
+  useEffect(() => {
+    loadSessions();
+  }, []);
+
+  async function loadSessions() {
+    try {
+      setIsLoadingSessions(true);
+      const response = await fetch("/api/chat/sessions");
+      const data = await response.json();
+
+      if (response.ok) {
+        setSessions(data.sessions || []);
+      }
+    } catch (err) {
+      console.error("Failed to load sessions:", err);
+    } finally {
+      setIsLoadingSessions(false);
+    }
+  }
+
+  async function loadSession(sessionIdToLoad: string) {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/chat/sessions/${sessionIdToLoad}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Ошибка загрузки сессии");
+      }
+
+      interface DBMessage {
+        id: string;
+        role: "user" | "assistant";
+        content: string;
+        created_at: string;
+      }
+
+      // Convert DB messages to store format
+      const loadedMessages: Message[] = data.messages.map((msg: DBMessage) => ({
+        id: msg.id,
+        role: msg.role,
+        content: msg.content,
+        timestamp: new Date(msg.created_at),
+      }));
+
+      setMessages(loadedMessages);
+      setSessionId(sessionIdToLoad);
+
+      // Build history for context
+      const conversationHistory: ConversationHistory[] = data.messages.map((msg: DBMessage) => ({
+        role: msg.role,
+        content: msg.content,
+      }));
+      setHistory(conversationHistory);
+    } catch (err) {
+      console.error("Failed to load session:", err);
+      setError(err instanceof Error ? err.message : "Ошибка загрузки сессии");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function handleSubmit(userMessage: string, image?: string) {
     addMessage({
@@ -43,6 +126,7 @@ export default function ConsultationPage() {
           message: userMessage,
           image,
           history,
+          sessionId,
         }),
       });
 
@@ -58,6 +142,13 @@ export default function ConsultationPage() {
       });
 
       setHistory(data.history);
+
+      if (data.sessionId) {
+        setSessionId(data.sessionId);
+      }
+
+      // Reload sessions to show new one
+      loadSessions();
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Произошла ошибка. Попробуйте еще раз.";
@@ -94,7 +185,7 @@ export default function ConsultationPage() {
       {/* Header */}
       <AppNavbar
         variant="page"
-        title="AI‑Консультация"
+        title="ИИ‑Консультация"
         subtitle="Персональный косметолог"
         icon={<Sparkles className="h-5 w-5 text-primary" />}
         backHref="/dashboard"
@@ -123,7 +214,7 @@ export default function ConsultationPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="font-serif text-2xl mb-2 font-semibold"
+                className="font-serif text-4xl mb-2 font-semibold"
               >
                 Добро пожаловать!
               </motion.h2>
@@ -133,7 +224,7 @@ export default function ConsultationPage() {
                 transition={{ delay: 0.4 }}
                 className="text-muted-foreground mb-8 max-w-md mx-auto"
               >
-                Я ваш персональный AI‑косметолог. Задайте вопрос о уходе за кожей, и я дам
+                Я ваш персональный ИИ‑косметолог. Задайте вопрос о уходе за кожей, и я дам
                 персонализированные рекомендации.
               </motion.p>
 
@@ -153,7 +244,7 @@ export default function ConsultationPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="rounded-full hover:bg-primary/10 hover:border-primary/50 transition-all hover:scale-105"
+                      className="rounded-full hover:bg-primary/20 hover:border-primary hover:text-primary transition-all hover:scale-105 dark:hover:bg-primary/10 dark:hover:border-primary/70"
                       onClick={() => handleSubmit(question)}
                     >
                       {question}
@@ -184,6 +275,56 @@ export default function ConsultationPage() {
           <ChatInput onSubmit={handleSubmit} disabled={isLoading} />
         </div>
       </div>
+
+      {/* History Sidebar */}
+      {sessions.length > 0 && messages.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-3xl mx-auto px-6 pb-6"
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Clock className="h-5 w-5 text-primary" />
+                История консультаций
+              </CardTitle>
+              <CardDescription>Найдено записей: {sessions.length}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {sessions.map((session) => (
+                  <button
+                    key={session.id}
+                    type="button"
+                    className="w-full text-left p-3 rounded-lg border border-border hover:bg-accent/50 hover:border-primary/50 transition-all group"
+                    onClick={() => loadSession(session.id)}
+                  >
+                    <div className="flex items-start gap-3">
+                      <MessageSquare className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0 mt-0.5" />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium line-clamp-1 group-hover:text-primary transition-colors">
+                          {session.title || "Без названия"}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {new Date(session.created_at).toLocaleString("ru-RU", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}{" "}
+                          • {session.chat_messages[0]?.count || 0} сообщений
+                        </p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
     </div>
   );
 }

@@ -15,13 +15,13 @@ export default function VerifyPage() {
           <div className="mx-auto inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-primary/10">
             <Mail className="h-8 w-8 text-primary" />
           </div>
-          <CardTitle className="font-serif text-2xl">Проверьте вашу почту</CardTitle>
+          <CardTitle className="font-serif text-4xl">Проверьте вашу почту</CardTitle>
           <CardDescription className="text-base">
             Мы отправили письмо с ссылкой для подтверждения на ваш email.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-base text-muted-foreground">
             Не получили письмо? Проверьте папку &quot;Спам&quot; или попробуйте зарегистрироваться
             снова.
           </p>

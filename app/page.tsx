@@ -27,14 +27,14 @@ export default async function HomePage() {
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-primary" />
-            <span className="font-serif text-2xl">РњРѕР№ РєРѕСЃРјРµС‚РѕР»РѕРі</span>
+            <span className="font-serif text-2xl">Мой косметолог</span>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/auth/login">
-              <Button variant="ghost">Р’РѕР№С‚Рё</Button>
+              <Button variant="ghost">Войти</Button>
             </Link>
             <Link href="/auth/signup">
-              <Button variant="gradient">Р РµРіРёСЃС‚СЂР°С†РёСЏ</Button>
+              <Button variant="gradient">Регистрация</Button>
             </Link>
           </div>
         </div>
@@ -45,23 +45,23 @@ export default async function HomePage() {
         <div className="mx-auto max-w-3xl text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
             <Sparkles className="h-4 w-4" />
-            AI-powered РєРѕСЃРјРµС‚РѕР»РѕРіРёСЏ
+            ИИ-косметология
           </div>
 
           <h1 className="font-serif text-4xl font-normal tracking-tight text-foreground">
-            РњРѕР№ Р»РёС‡РЅС‹Р№ <span className="gradient-text">РєРѕСЃРјРµС‚РѕР»РѕРі</span>
+            Мой личный <span className="gradient-text">косметолог</span>
           </h1>
 
           <p className="mt-6 text-base leading-7 text-muted-foreground">
-            РџРѕР»СѓС‡РёС‚Рµ РїРµСЂСЃРѕРЅР°Р»РёР·РёСЂРѕРІР°РЅРЅС‹Рµ СЂРµРєРѕРјРµРЅРґР°С†РёРё РїРѕ СѓС…РѕРґСѓ Р·Р° РєРѕР¶РµР№ РѕС‚ РёСЃРєСѓСЃСЃС‚РІРµРЅРЅРѕРіРѕ
-            РёРЅС‚РµР»Р»РµРєС‚Р°. РџСЂРѕС„РµСЃСЃРёРѕРЅР°Р»СЊРЅС‹Р№ СѓС…РѕРґ РґРѕСЃС‚СѓРїРµРЅ РєР°Р¶РґРѕРјСѓ.
+            Получите персонализированные рекомендации по уходу за кожей от искусственного
+            интеллекта. Профессиональный уход доступен каждому.
           </p>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link href="/auth/signup">
               <Button size="xl" variant="gradient" className="glow">
                 <Heart className="mr-2 h-5 w-5" />
-                РќР°С‡Р°С‚СЊ Р±РµСЃРїР»Р°С‚РЅРѕ
+                Начать бесплатно
               </Button>
             </Link>
           </div>
@@ -70,4 +70,3 @@ export default async function HomePage() {
     </div>
   );
 }
-

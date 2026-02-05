@@ -44,7 +44,7 @@ export function SkinTypeStep({ value, onChange, onNext, onPrev }: SkinTypeStepPr
       className="space-y-6"
     >
       <div className="text-center space-y-2">
-        <h2 className="font-serif text-2xl font-semibold">Ваш тип кожи</h2>
+        <h2 className="text-2xl font-semibold">Ваш тип кожи</h2>
         <p className="text-muted-foreground">Выберите наиболее подходящий вариант</p>
       </div>
 
@@ -58,12 +58,11 @@ export function SkinTypeStep({ value, onChange, onNext, onPrev }: SkinTypeStepPr
           >
             <Card
               glass={value === type.value}
-              className={
-                "p-4 cursor-pointer transition-all hover:scale-[1.02] " +
-                (value === type.value
+              className={`p-4 cursor-pointer transition-all hover:scale-[1.02] ${
+                value === type.value
                   ? "ring-2 ring-primary shadow-lg shadow-primary/20"
-                  : "hover:shadow-md")
-              }
+                  : "hover:shadow-md"
+              }`}
               onClick={() => onChange(type.value)}
             >
               <div className="flex items-center gap-4">
@@ -120,5 +119,3 @@ export function SkinTypeStep({ value, onChange, onNext, onPrev }: SkinTypeStepPr
     </motion.div>
   );
 }
-
-

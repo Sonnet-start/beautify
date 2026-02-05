@@ -72,10 +72,8 @@ export function GoalsStep({
       className="space-y-6"
     >
       <div className="text-center space-y-2">
-        <h2 className="font-serif text-2xl font-semibold">Цели и особенности</h2>
-        <p className="text-muted-foreground">
-          Выберите, что хотите улучшить и укажите особенности
-        </p>
+        <h2 className="text-2xl font-semibold">Цели и особенности</h2>
+        <p className="text-muted-foreground">Выберите, что хотите улучшить и укажите особенности</p>
       </div>
 
       <Card glass className="p-6 space-y-6">

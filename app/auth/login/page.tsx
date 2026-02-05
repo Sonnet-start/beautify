@@ -111,7 +111,7 @@ export default function LoginPage() {
               <Sparkles className="h-8 w-8 text-primary" />
             </motion.div>
             <div>
-              <CardTitle className="font-serif text-3xl">Добро пожаловать</CardTitle>
+              <CardTitle className="font-serif text-4xl">Добро пожаловать</CardTitle>
               <CardDescription className="text-base mt-2">
                 Войдите, чтобы продолжить
               </CardDescription>

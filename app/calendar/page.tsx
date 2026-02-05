@@ -4,7 +4,7 @@ import { AppNavbar } from "@/components/nav/app-navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { Calendar, Check, ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { Calendar, Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
 interface RoutineItem {
@@ -120,13 +120,13 @@ export default function CalendarPage() {
           className="space-y-8"
         >
           {/* Calendar */}
-          <Card glass>
-            <CardHeader className="pb-2">
+          <Card glass className="max-w-sm mx-auto">
+            <CardHeader className="pb-1 pt-3">
               <div className="flex items-center justify-between">
                 <Button variant="ghost" size="icon" onClick={prevMonth}>
                   <ChevronLeft className="h-5 w-5" />
                 </Button>
-                <CardTitle className="font-serif">
+                <CardTitle className="font-serif text-lg">
                   {months[month]} {year}
                 </CardTitle>
                 <Button variant="ghost" size="icon" onClick={nextMonth}>
@@ -134,13 +134,13 @@ export default function CalendarPage() {
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-3 pb-3">
               {/* Week days header */}
-              <div className="grid grid-cols-7 gap-1 mb-2">
+              <div className="grid grid-cols-7 gap-0.5 mb-1">
                 {weekDays.map((day) => (
                   <div
                     key={day}
-                    className="text-center text-sm font-medium text-muted-foreground py-2"
+                    className="text-center text-xs font-medium text-muted-foreground py-1"
                   >
                     {day}
                   </div>
@@ -148,7 +148,7 @@ export default function CalendarPage() {
               </div>
 
               {/* Calendar grid */}
-              <div className="grid grid-cols-7 gap-1">
+              <div className="grid grid-cols-7 gap-0.5">
                 {/* Empty cells for days before month starts */}
                 {emptyDays.map((day) => (
                   <div key={`prev-${year}-${month}-${day}`} className="aspect-square" />
@@ -161,7 +161,7 @@ export default function CalendarPage() {
                     <button
                       key={day}
                       onClick={() => selectDay(day)}
-                      className={`aspect-square rounded-lg flex items-center justify-center text-sm transition-colors
+                      className={`aspect-square rounded-md flex items-center justify-center text-xs transition-colors
                         ${isToday(day) ? "bg-primary text-primary-foreground" : ""}
                         ${isSelected(day) && !isToday(day) ? "bg-primary/20 text-primary" : ""}
                         ${!isToday(day) && !isSelected(day) ? "hover:bg-muted" : ""}
@@ -175,8 +175,8 @@ export default function CalendarPage() {
             </CardContent>
           </Card>
 
-          {/* Daily routine */}
-          <div className="space-y-6">
+          {/* Routines grid */}
+          <div className="grid md:grid-cols-2 gap-6">
             {/* Morning routine */}
             <Card glass>
               <CardHeader className="pb-3">
@@ -215,6 +215,13 @@ export default function CalendarPage() {
             <Card glass>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">🌙 Вечерний уход</CardTitle>
+                <CardDescription>
+                  {selectedDate.toLocaleDateString("ru-RU", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                  })}
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
                 {eveningRoutine.map((item) => (
@@ -237,12 +244,6 @@ export default function CalendarPage() {
                 ))}
               </CardContent>
             </Card>
-
-            {/* Add custom step */}
-            <Button variant="outline" className="w-full" disabled>
-              <Plus className="mr-2 h-5 w-5" />
-              Добавить шаг (скоро)
-            </Button>
           </div>
         </motion.div>
       </main>

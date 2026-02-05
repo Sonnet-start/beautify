@@ -1,4 +1,6 @@
+import { DisclaimerProvider } from "@/components/providers/disclaimer-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, Prata } from "next/font/google";
 import "./globals.css";
@@ -19,7 +21,7 @@ const prata = Prata({
 
 export const metadata: Metadata = {
   title: "Мой личный косметолог",
-  description: "Персонализированные AI-рекомендации по уходу за кожей",
+  description: "Персонализированные ИИ-рекомендации по уходу за кожей",
 };
 
 export default function RootLayout({
@@ -33,7 +35,11 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${ibmPlexSans.variable} ${prata.variable} font-sans antialiased`}
       >
-        <QueryProvider>{children}</QueryProvider>
+        <ThemeProvider>
+          <QueryProvider>
+            <DisclaimerProvider>{children}</DisclaimerProvider>
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
