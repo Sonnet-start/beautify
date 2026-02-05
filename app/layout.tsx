@@ -1,19 +1,19 @@
-import type { Metadata } from "next";
-import { Noto_Sans, Tenor_Sans } from "next/font/google";
 import { QueryProvider } from "@/components/providers/query-provider";
+import type { Metadata } from "next";
+import { IBM_Plex_Sans, Prata } from "next/font/google";
 import "./globals.css";
 
-const notoSans = Noto_Sans({
-  variable: "--font-noto-sans",
+const ibmPlexSans = IBM_Plex_Sans({
+  variable: "--font-ibm-plex-sans",
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
   preload: false,
 });
 
-const tenorSans = Tenor_Sans({
-  variable: "--font-tenor-sans",
+const prata = Prata({
+  variable: "--font-prata",
   subsets: ["latin", "cyrillic"],
-  weight: "400",
+  weight: ["400"],
   preload: false,
 });
 
@@ -31,7 +31,7 @@ export default function RootLayout({
     <html lang="ru" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${notoSans.variable} ${tenorSans.variable} font-sans antialiased`}
+        className={`${ibmPlexSans.variable} ${prata.variable} font-sans antialiased`}
       >
         <QueryProvider>{children}</QueryProvider>
       </body>

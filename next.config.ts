@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     "@google/gemini-cli-core",
     "@lydell/node-pty-win32-x64",
     "tree-sitter-bash",
-    "web-tree-sitter"
+    "web-tree-sitter",
   ],
 };
 

@@ -1,12 +1,14 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Heart, ArrowRight } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { Heart, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (user) {
     redirect("/dashboard");
@@ -47,13 +49,12 @@ export default async function HomePage() {
           </div>
 
           <h1 className="font-serif text-5xl font-normal tracking-tight text-foreground lg:text-6xl">
-            Мой личный{" "}
-            <span className="gradient-text">косметолог</span>
+            Мой личный <span className="gradient-text">косметолог</span>
           </h1>
 
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            Получите персонализированные рекомендации по уходу за кожей от искусственного интеллекта.
-            Профессиональный уход доступен каждому.
+            Получите персонализированные рекомендации по уходу за кожей от искусственного
+            интеллекта. Профессиональный уход доступен каждому.
           </p>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
