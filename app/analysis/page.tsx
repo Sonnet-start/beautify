@@ -356,7 +356,7 @@ export default function AnalysisPage() {
 
           {/* Tips */}
           {!selectedImage && (
-            <Card>
+            <Card glass>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <ImageIcon className="h-5 w-5 text-primary" />
@@ -376,7 +376,7 @@ export default function AnalysisPage() {
 
           {/* History */}
           {history.length > 0 && (
-            <Card>
+            <Card glass>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Clock className="h-5 w-5 text-primary" />

@@ -252,6 +252,60 @@ export default function ConsultationPage() {
                   </motion.div>
                 ))}
               </motion.div>
+
+              {/* Redesigned History Block */}
+              {sessions.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.8 }}
+                  className="mt-16 border-t border-border/40 pt-10"
+                >
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Clock className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-serif text-xl font-medium">История консультаций</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Ваши предыдущие беседы ({sessions.length})
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {sessions.map((session, i) => (
+                      <motion.button
+                        key={session.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.9 + i * 0.05 }}
+                        onClick={() => loadSession(session.id)}
+                        className="group relative flex flex-col items-start gap-3 rounded-2xl border border-border/50 bg-background/40 p-5 text-left shadow-sm transition-all hover:border-primary/40 hover:bg-background/60 hover:shadow-md active:scale-[0.98] backdrop-blur-sm"
+                      >
+                        <div className="flex w-full items-start justify-between gap-2">
+                          <span className="font-medium line-clamp-1 text-foreground/90 group-hover:text-primary transition-colors">
+                            {session.title || "Новый диалог"}
+                          </span>
+                          <MessageSquare className="h-4 w-4 text-muted-foreground/50 group-hover:text-primary/70 transition-colors" />
+                        </div>
+
+                        <div className="flex w-full items-center justify-between text-xs text-muted-foreground">
+                          <span>
+                            {new Date(session.created_at).toLocaleDateString("ru-RU", {
+                              day: "numeric",
+                              month: "long",
+                            })}
+                          </span>
+                          <span className="bg-primary/5 px-2 py-0.5 rounded-full text-primary/70">
+                            {session.chat_messages[0]?.count || 0} сообщ.
+                          </span>
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
           ) : (
             <div className="space-y-4">
@@ -277,54 +331,7 @@ export default function ConsultationPage() {
       </div>
 
       {/* History Sidebar */}
-      {sessions.length > 0 && messages.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-3xl mx-auto px-6 pb-6"
-        >
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Clock className="h-5 w-5 text-primary" />
-                История консультаций
-              </CardTitle>
-              <CardDescription>Найдено записей: {sessions.length}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {sessions.map((session) => (
-                  <button
-                    key={session.id}
-                    type="button"
-                    className="w-full text-left p-3 rounded-lg border border-border hover:bg-accent/50 hover:border-primary/50 transition-all group"
-                    onClick={() => loadSession(session.id)}
-                  >
-                    <div className="flex items-start gap-3">
-                      <MessageSquare className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0 mt-0.5" />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium line-clamp-1 group-hover:text-primary transition-colors">
-                          {session.title || "Без названия"}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(session.created_at).toLocaleString("ru-RU", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}{" "}
-                          • {session.chat_messages[0]?.count || 0} сообщений
-                        </p>
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
+
     </div>
   );
 }
