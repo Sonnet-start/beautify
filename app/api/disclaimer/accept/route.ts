@@ -14,7 +14,8 @@ export async function POST() {
     }
 
     const { error } = await supabase
-      .from("users")
+      .from("profiles")
+      // @ts-ignore
       .update({ disclaimer_accepted_at: new Date().toISOString() })
       .eq("id", user.id);
 

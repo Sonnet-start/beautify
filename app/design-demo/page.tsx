@@ -47,7 +47,7 @@ export default function DesignDemoPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300">
+    <div className="min-h-screen transition-colors duration-300">
       {/* Theme Toggle */}
       <div className="fixed top-4 right-4 z-50">
         <Button variant="glass" size="icon" onClick={toggleTheme}>

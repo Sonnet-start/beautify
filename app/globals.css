@@ -142,13 +142,6 @@
   --radius-xl: 1rem;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
-  accent-color: var(--primary);
-}
-
 /* Glassmorphism utilities */
 .glass {
   background: rgba(255, 255, 255, 0.7);
@@ -206,4 +199,54 @@ body {
 
 .markdown a {
   text-decoration: underline;
+}
+
+/* Dynamic Gradient Backgrounds */
+:root {
+  /* Morning Glow - Light Theme Gradients */
+  --bg-gradient-1: oklch(0.96 0.04 350);
+  /* Rosoer - increased chroma/reduced lightness slightly */
+  --bg-gradient-2: oklch(0.94 0.06 60);
+  /* Peacher - increased chroma */
+  --bg-gradient-3: oklch(0.93 0.05 220);
+  /* Bluer - increased chroma */
+}
+
+.dark {
+  /* Night Repair - Dark Theme Gradients */
+  --bg-gradient-1: oklch(0.12 0.03 280);
+  /* Deep Midnight */
+  --bg-gradient-2: oklch(0.15 0.04 340);
+  /* Dark Plum */
+  --bg-gradient-3: oklch(0.1 0.03 240);
+  /* Deep Navy */
+}
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+body {
+  background: linear-gradient(-45deg,
+      var(--bg-gradient-1),
+      var(--bg-gradient-2),
+      var(--bg-gradient-3));
+  background-size: 400% 400%;
+  animation: gradient-flow 15s ease infinite;
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  accent-color: var(--primary);
+  /* Smooth transition for theme switching */
+  transition: color 0.3s ease, background 0.3s ease;
+  min-height: 100vh;
 }

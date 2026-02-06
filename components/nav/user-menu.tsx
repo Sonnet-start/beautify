@@ -61,7 +61,7 @@ export function UserMenu({ initials, name, onSignOut }: UserMenuProps) {
       <div
         role="menu"
         className={cn(
-          "absolute right-0 mt-2 w-44 origin-top-right rounded-xl border",
+          "absolute right-0 mt-2 w-44 origin-top-right rounded-xl border z-50",
           "border-border/60 bg-background/95 p-1 shadow-xl",
           "backdrop-blur-md transition",
           open ? "scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0"
@@ -82,7 +82,9 @@ export function UserMenu({ initials, name, onSignOut }: UserMenuProps) {
         <button
           type="button"
           role="menuitem"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
             setOpen(false);
             onSignOut();
           }}

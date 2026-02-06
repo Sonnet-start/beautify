@@ -136,11 +136,11 @@ export function ProfileClient({ userId, userName, initialProfile }: ProfileClien
 
       const hasCompleted = Boolean(
         loadedProfile.age &&
-          typeof loadedProfile.age === "string" &&
-          loadedProfile.age.trim().length > 0 &&
-          loadedProfile.skinType &&
-          typeof loadedProfile.skinType === "string" &&
-          loadedProfile.skinType.trim().length > 0
+        typeof loadedProfile.age === "string" &&
+        loadedProfile.age.trim().length > 0 &&
+        loadedProfile.skinType &&
+        typeof loadedProfile.skinType === "string" &&
+        loadedProfile.skinType.trim().length > 0
       );
       console.log("Profile check:", {
         age: loadedProfile.age,
@@ -229,11 +229,11 @@ export function ProfileClient({ userId, userName, initialProfile }: ProfileClien
 
       const hasCompleted = Boolean(
         loadedProfile.age &&
-          typeof loadedProfile.age === "string" &&
-          loadedProfile.age.trim().length > 0 &&
-          loadedProfile.skinType &&
-          typeof loadedProfile.skinType === "string" &&
-          loadedProfile.skinType.trim().length > 0
+        typeof loadedProfile.age === "string" &&
+        loadedProfile.age.trim().length > 0 &&
+        loadedProfile.skinType &&
+        typeof loadedProfile.skinType === "string" &&
+        loadedProfile.skinType.trim().length > 0
       );
       console.log("Profile check:", {
         age: loadedProfile.age,
@@ -369,7 +369,7 @@ export function ProfileClient({ userId, userName, initialProfile }: ProfileClien
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Background decoration */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-primary/10 blur-3xl animate-pulse" />

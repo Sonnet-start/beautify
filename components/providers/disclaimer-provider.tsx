@@ -43,7 +43,8 @@ export function DisclaimerProvider({ children }: DisclaimerProviderProps) {
 
       if (user) {
         const { data: profile } = await supabase
-          .from("users")
+          .from("profiles")
+          // @ts-ignore
           .select("disclaimer_accepted_at")
           .eq("id", user.id)
           .maybeSingle();
@@ -63,22 +64,24 @@ export function DisclaimerProvider({ children }: DisclaimerProviderProps) {
       setUser(session?.user ?? null);
 
       if (event === "SIGNED_IN" && session?.user) {
-        const { data: existingUser } = await supabase
-          .from("users")
+        const { data: existingProfile } = await supabase
+          .from("profiles")
+          // @ts-ignore
           .select("disclaimer_accepted_at")
           .eq("id", session.user.id)
           .maybeSingle();
 
-        if (!existingUser) {
-          await supabase.from("users").insert({
+        if (!existingProfile) {
+          // Create profile if it doesn't exist
+          // @ts-ignore
+          await supabase.from("profiles").insert({
             id: session.user.id,
             email: session.user.email,
-            name: session.user.user_metadata?.full_name ?? session.user.email?.split("@")[0],
-            avatar_url: session.user.user_metadata?.avatar_url,
           });
           setIsDisclaimerAccepted(false);
         } else {
-          setIsDisclaimerAccepted(existingUser.disclaimer_accepted_at != null);
+          // @ts-ignore
+          setIsDisclaimerAccepted(existingProfile.disclaimer_accepted_at != null);
         }
       }
     });

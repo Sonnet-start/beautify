@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 
+import { signOut } from "@/app/auth/actions";
 import { ThemeToggle } from "@/components/nav/theme-toggle";
 import { UserMenu } from "@/components/nav/user-menu";
 import { Button } from "@/components/ui/button";
@@ -101,13 +102,13 @@ export function AppNavbar({
   }, [supabase, userName]);
 
   async function handleSignOut() {
-    await supabase.auth.signOut();
-    router.replace("/");
-    router.refresh();
+    setIsLoading(true);
+    // Explicitly call the server action for clean logout
+    await signOut();
   }
 
   return (
-    <header className="border-b border-border/50 backdrop-blur-md bg-background/80 sticky top-0 z-40 shadow-sm">
+    <header className="border-b border-border/40 backdrop-blur-xl bg-background/30 sticky top-0 z-40 shadow-sm">
       <div
         className={cn(
           "max-w-5xl mx-auto px-6 py-4 flex items-center justify-between",

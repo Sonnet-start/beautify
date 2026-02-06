@@ -2,11 +2,7 @@
   "mcpServers": {
     "supabase": {
       "command": "npx",
-      "args": [
-        "-y",
-        "mcp-remote",
-        "https://mcp.supabase.com/mcp?project_ref=gtdylikhsujjpczlgodd"
-      ],
+      "args": ["-y", "mcp-remote", "https://mcp.supabase.com/mcp?project_ref=gtdylikhsujjpczlgodd"],
       "disabled": false,
       "autoApprove": [
         "list_tables",
@@ -23,10 +19,7 @@
     },
     "shadcn": {
       "command": "npx",
-      "args": [
-        "shadcn@latest",
-        "mcp"
-      ],
+      "args": ["shadcn@latest", "mcp"],
       "disabled": false,
       "autoApprove": [
         "search_items_in_registries",
