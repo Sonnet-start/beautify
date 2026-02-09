@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { ArrowLeft, Sparkles } from "lucide-react";
 import Link from "next/link";
@@ -41,7 +41,7 @@ export function AppNavbar({
   containerClassName,
   userName,
 }: AppNavbarProps) {
-  const router = useRouter();
+  const _router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [displayName, setDisplayName] = useState<string | null>(userName || null);
   const [isLoading, setIsLoading] = useState(!userName);

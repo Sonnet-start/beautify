@@ -4,7 +4,6 @@ import { ChatInput } from "@/components/chat/chat-input";
 import { MessageBubble, TypingIndicator } from "@/components/chat/message-bubble";
 import { AppNavbar } from "@/components/nav/app-navbar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ConversationHistory, type Message, useChatStore } from "@/lib/store/chat-store";
 import { AnimatePresence, motion } from "framer-motion";
 import { Clock, MessageSquare, Sparkles } from "lucide-react";
@@ -331,7 +330,6 @@ export default function ConsultationPage() {
       </div>
 
       {/* History Sidebar */}
-
     </div>
   );
 }

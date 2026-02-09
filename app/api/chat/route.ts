@@ -1,11 +1,46 @@
-import { type UserProfile, analyzeImage, generateRecommendation } from "@/lib/ai/gemini";
+import { analyzeImage, generateRecommendation } from "@/lib/ai/gemini";
+import { handleCORSOptions, setCORSHeaders } from "@/lib/cors";
+import { createRateLimit } from "@/lib/rate-limit";
 import { createClient } from "@/lib/supabase/server";
+import { getUserProfile } from "@/lib/user-profile";
 import { type NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
+// Rate limiting: 30 requests per 1 minute per IP
+const rateLimit = createRateLimit({
+  windowMs: 60 * 1000,
+  maxRequests: 30,
+});
+
+export async function OPTIONS(request: NextRequest) {
+  return handleCORSOptions(request);
+}
+
 export async function POST(request: NextRequest) {
   try {
+    // Check rate limit
+    const rateLimitResult = rateLimit(request);
+    if (!rateLimitResult.success) {
+      return setCORSHeaders(
+        request,
+        NextResponse.json(
+          {
+            error: "Слишком много запросов. Попробуйте позже.",
+            retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000),
+          },
+          {
+            status: 429,
+            headers: {
+              "X-RateLimit-Limit": rateLimitResult.limit.toString(),
+              "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+              "X-RateLimit-Reset": rateLimitResult.reset.toString(),
+            },
+          }
+        )
+      );
+    }
+
     // Check authentication
     const supabase = await createClient();
     const {
@@ -13,35 +48,34 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: "Требуется авторизация" }, { status: 401 });
+      return setCORSHeaders(
+        request,
+        NextResponse.json({ error: "Требуется авторизация" }, { status: 401 })
+      );
     }
 
     const body = await request.json();
     const { message, image, history, sessionId } = body;
     const MAX_MESSAGE_LENGTH = 2000;
     const MAX_HISTORY = 20;
-    const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+    const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5MB
     const allowedImageTypes = ["image/jpeg", "image/png", "image/webp"];
 
     if (!message || typeof message !== "string") {
-      return NextResponse.json({ error: "Сообщение обязательно" }, { status: 400 });
+      return setCORSHeaders(
+        request,
+        NextResponse.json({ error: "Сообщение обязательно" }, { status: 400 })
+      );
     }
     if (message.length > MAX_MESSAGE_LENGTH) {
-      return NextResponse.json({ error: "Сообщение слишком длинное" }, { status: 400 });
+      return setCORSHeaders(
+        request,
+        NextResponse.json({ error: "Сообщение слишком длинное" }, { status: 400 })
+      );
     }
 
-    const goalsRaw = user.user_metadata?.goals;
-    const problemsRaw = user.user_metadata?.skin_problems;
-
-    // Get user profile from metadata
-    const userProfile: UserProfile = {
-      name: user.user_metadata?.name,
-      age: user.user_metadata?.age,
-      skinType: user.user_metadata?.skin_type,
-      problems: Array.isArray(problemsRaw) ? problemsRaw : problemsRaw ? [problemsRaw] : [],
-      allergies: user.user_metadata?.allergies,
-      goals: Array.isArray(goalsRaw) ? goalsRaw : goalsRaw ? [goalsRaw] : [],
-    };
+    // Get user profile from database
+    const userProfile = await getUserProfile(user.id);
 
     const safeHistory = Array.isArray(history)
       ? history
@@ -55,12 +89,17 @@ export async function POST(request: NextRequest) {
       : [];
 
     let resultText = "";
-    let resultHistory = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    let resultHistory: any[] = [];
     let currentSessionId = sessionId;
 
     if (image) {
       if (typeof image !== "string") {
-        return NextResponse.json({ error: "Неверный формат изображения" }, { status: 400 });
+        return setCORSHeaders(
+          request,
+          NextResponse.json({ error: "Неверный формат изображения" }, { status: 400 })
+        );
       }
 
       // Extract mimeType from base64 data URL
@@ -69,17 +108,23 @@ export async function POST(request: NextRequest) {
       const base64Data = dataUrlMatch?.[2] ?? image;
 
       if (!allowedImageTypes.includes(mimeType)) {
-        return NextResponse.json(
-          { error: "Неподдерживаемый формат. Используйте JPG, PNG или WEBP." },
-          { status: 400 }
+        return setCORSHeaders(
+          request,
+          NextResponse.json(
+            { error: "Неподдерживаемый формат. Используйте JPG, PNG или WEBP." },
+            { status: 400 }
+          )
         );
       }
 
       const approxBytes = Math.ceil((base64Data.length * 3) / 4);
       if (approxBytes > MAX_IMAGE_BYTES) {
-        return NextResponse.json(
-          { error: "Размер изображения не должен превышать 5 МБ" },
-          { status: 400 }
+        return setCORSHeaders(
+          request,
+          NextResponse.json(
+            { error: "Размер изображения не должен превышать 5 МБ" },
+            { status: 400 }
+          )
         );
       }
 
@@ -109,6 +154,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Save photo analysis to DB
+      // @ts-expect-error - Supabase types issue
       await supabase.from("photo_analyses").insert({
         user_id: user.id,
         analysis_text: analysisText,
@@ -120,6 +166,7 @@ export async function POST(request: NextRequest) {
       if (!currentSessionId) {
         const { data: session, error: sessionError } = await supabase
           .from("chat_sessions")
+          // @ts-expect-error - Supabase types issue
           .insert({
             user_id: user.id,
             title: message.slice(0, 50) + (message.length > 50 ? "..." : ""),
@@ -128,7 +175,8 @@ export async function POST(request: NextRequest) {
           .single();
 
         if (sessionError) throw sessionError;
-        currentSessionId = session.id;
+        // @ts-expect-error - Supabase types issue
+        currentSessionId = session?.id;
       }
 
       const genResult = await generateRecommendation(message, userProfile, safeHistory);
@@ -136,22 +184,26 @@ export async function POST(request: NextRequest) {
       resultHistory = genResult.history;
 
       // 2. Save messages to DB
+      // @ts-expect-error - Supabase types issue
       await supabase.from("chat_messages").insert([
         { session_id: currentSessionId, role: "user", content: message },
         { session_id: currentSessionId, role: "assistant", content: resultText },
       ]);
     }
 
-    return NextResponse.json({
-      response: resultText,
-      history: resultHistory,
-      sessionId: currentSessionId,
-    });
+    return setCORSHeaders(
+      request,
+      NextResponse.json({
+        response: resultText,
+        history: resultHistory,
+        sessionId: currentSessionId,
+      })
+    );
   } catch (error) {
     console.error("AI Chat Error:", error);
 
     const errorMessage = error instanceof Error ? error.message : "Произошла ошибка";
 
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    return setCORSHeaders(request, NextResponse.json({ error: errorMessage }, { status: 500 }));
   }
 }

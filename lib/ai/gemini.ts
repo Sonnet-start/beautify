@@ -8,6 +8,32 @@ const gemini = createGeminiProvider({
 
 const MODEL_ID = "gemini-3-flash-preview";
 
+const MAX_RETRIES = 3;
+const RETRY_DELAYS = [1000, 2000, 4000];
+
+type GenerateTextParams = Parameters<typeof generateText>[0];
+
+async function generateTextWithRetry(params: GenerateTextParams) {
+  let lastError: Error | undefined;
+
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      return await generateText(params);
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+
+      if (attempt < MAX_RETRIES) {
+        const delay = RETRY_DELAYS[attempt];
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  throw new Error(
+    `Не удалось получить ответ от ИИ после ${MAX_RETRIES} попыток. Последняя ошибка: ${lastError?.message || "Неизвестная ошибка"}. Пожалуйста, попробуйте позже.`
+  );
+}
+
 // System prompt for the cosmetology AI assistant
 const SYSTEM_PROMPT = `Ты — профессиональный ИИ-ассистент в области косметологии и ухода за кожей.
 Твоя задача — давать персонализированные рекомендации по домашнему уходу за кожей лица.
@@ -107,7 +133,7 @@ export async function generateRecommendation(
     content: msg.content,
   }));
 
-  const { text } = await generateText({
+  const { text } = await generateTextWithRetry({
     model: gemini(MODEL_ID),
     system: dynamicSystemPrompt,
     messages: [...messages, { role: "user", content: userMessage }],
@@ -144,7 +170,7 @@ export async function analyzeImage(
 
 Будь объективен и конструктивен в своих рекомендациях.`;
 
-  const { text } = await generateText({
+  const { text } = await generateTextWithRetry({
     model: gemini(MODEL_ID),
     system: dynamicSystemPrompt,
     messages: [

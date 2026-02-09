@@ -90,12 +90,8 @@ export function ProfileClient({ userId, userName, initialProfile }: ProfileClien
   });
 
   const loadProfile = useCallback(async () => {
-    console.log("Loading profile for user:", userId);
-
     // Use initial profile data from server
     if (initialProfile) {
-      console.log("Using initial profile data:", initialProfile);
-
       // Type assertion for database response
       type DbProfile = {
         name: string | null;
@@ -136,23 +132,17 @@ export function ProfileClient({ userId, userName, initialProfile }: ProfileClien
 
       const hasCompleted = Boolean(
         loadedProfile.age &&
-        typeof loadedProfile.age === "string" &&
-        loadedProfile.age.trim().length > 0 &&
-        loadedProfile.skinType &&
-        typeof loadedProfile.skinType === "string" &&
-        loadedProfile.skinType.trim().length > 0
+          typeof loadedProfile.age === "string" &&
+          loadedProfile.age.trim().length > 0 &&
+          loadedProfile.skinType &&
+          typeof loadedProfile.skinType === "string" &&
+          loadedProfile.skinType.trim().length > 0
       );
-      console.log("Profile check:", {
-        age: loadedProfile.age,
-        skinType: loadedProfile.skinType,
-        hasCompleted,
-      });
       setHasProfile(hasCompleted);
       return;
     }
 
     // Fallback: try to load from client (shouldn't happen)
-    console.log("No initial profile, loading from client...");
     const supabase = createClient();
 
     try {
@@ -160,10 +150,8 @@ export function ProfileClient({ userId, userName, initialProfile }: ProfileClien
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      console.log("Session:", session ? "exists" : "missing");
 
       if (!session) {
-        console.error("No session found!");
         setHasProfile(false);
         return;
       }
@@ -174,11 +162,7 @@ export function ProfileClient({ userId, userName, initialProfile }: ProfileClien
         .eq("id", userId)
         .single();
 
-      console.log("Profile data from DB:", profileData);
-      console.log("Profile error:", error);
-
       if (error) {
-        console.error("Error loading profile from DB:", error);
         if (error.code === "PGRST116") {
           setHasProfile(false);
           return;
@@ -186,7 +170,6 @@ export function ProfileClient({ userId, userName, initialProfile }: ProfileClien
       }
 
       if (!profileData) {
-        console.log("No profile data found");
         setHasProfile(false);
         return;
       }
@@ -229,22 +212,14 @@ export function ProfileClient({ userId, userName, initialProfile }: ProfileClien
 
       const hasCompleted = Boolean(
         loadedProfile.age &&
-        typeof loadedProfile.age === "string" &&
-        loadedProfile.age.trim().length > 0 &&
-        loadedProfile.skinType &&
-        typeof loadedProfile.skinType === "string" &&
-        loadedProfile.skinType.trim().length > 0
+          typeof loadedProfile.age === "string" &&
+          loadedProfile.age.trim().length > 0 &&
+          loadedProfile.skinType &&
+          typeof loadedProfile.skinType === "string" &&
+          loadedProfile.skinType.trim().length > 0
       );
-      console.log("Profile check:", {
-        age: loadedProfile.age,
-        ageType: typeof loadedProfile.age,
-        skinType: loadedProfile.skinType,
-        skinTypeType: typeof loadedProfile.skinType,
-        hasCompleted,
-      });
       setHasProfile(hasCompleted);
-    } catch (error) {
-      console.error("Profile load exception:", error);
+    } catch (_error) {
       setHasProfile(false);
     }
   }, [userId, initialProfile]);
@@ -349,8 +324,7 @@ export function ProfileClient({ userId, userName, initialProfile }: ProfileClien
       setProfile(updatedProfile);
       setIsEditing(false);
       setHasProfile(!!(form.age && form.skinType));
-    } catch (error) {
-      console.error("Profile update error:", error);
+    } catch (_error) {
       alert("Ошибка при обновлении профиля. Попробуйте еще раз.");
     } finally {
       setIsSaving(false);

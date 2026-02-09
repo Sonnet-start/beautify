@@ -57,8 +57,9 @@ export function FeatureCard({
     >
       <Card
         glass
-        className={`h-full transition-all duration-300 ${available ? "hover:shadow-xl hover:scale-[1.02]" : "opacity-60"
-          }`}
+        className={`h-full transition-all duration-300 ${
+          available ? "hover:shadow-xl hover:scale-[1.02]" : "opacity-60"
+        }`}
       >
         <CardHeader>
           <div className="mb-2 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
